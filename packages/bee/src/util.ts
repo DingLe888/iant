@@ -1,0 +1,1 @@
+const getPathData = path => {};
