@@ -1,7 +1,8 @@
 import { QueryLang } from './ql';
-export type TQLang = Array<
-  Array<string | number> | string | QueryLang | Function
->;
+
+export type TPath = Array<string | number> | string | QueryLang;
+
+export type TQLang = Array<TPath | Function>;
 
 export interface IQLangProps {
   name: string;
@@ -10,4 +11,8 @@ export interface IQLangProps {
 
 export interface IStoreProps {
   state?: Object;
+  ql?: { [name: string]: QueryLang };
+  methods?: { [name: string]: Function };
 }
+
+export type TSubscriber = (data: Object) => void;
