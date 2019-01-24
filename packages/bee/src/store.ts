@@ -38,7 +38,7 @@ export default class Store<T = Object> {
     }, {});
   }
 
-  dispatch(action: string, params?: Object) {
+  dispatch = (action: string, params?: Object) => {
     if (!this._reducer) {
       return;
     }
@@ -55,7 +55,7 @@ export default class Store<T = Object> {
         subscribe(this._state);
       }
     }
-  }
+  };
 
   getState() {
     return Object.freeze(this._state);
