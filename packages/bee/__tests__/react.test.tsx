@@ -14,9 +14,9 @@ const store = createStore({
 const TestRelax = () => (
   <Relax
     relaxProps={[['list', 0, 'id'], 'name']}
-    render={props => (
+    render={({ relaxProps }) => (
       <div>
-        {(props as any).id} {(props as any).name}
+        {(relaxProps as any).id} {(relaxProps as any).name}
       </div>
     )}
   />

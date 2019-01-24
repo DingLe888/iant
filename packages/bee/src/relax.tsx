@@ -2,9 +2,15 @@ import React from 'react';
 import { StoreContext } from './context';
 import Store from './store';
 import { isArray, isStr } from './util';
-interface IProps {
+
+export interface IRenderProps {
+  relaxProps: Object;
+  [name: string]: any;
+}
+
+export interface IProps {
   relaxProps: Array<any>;
-  render: (props: Object) => React.ReactElement<Object>;
+  render: (props: IRenderProps) => React.ReactElement<Object>;
   [name: string]: any;
 }
 
@@ -22,7 +28,9 @@ export default class Relax extends React.Component<IProps> {
     const { render, relaxProps, ...other } = this.props;
     return render({
       ...other,
-      ...this._relaxProps
+      relaxProps: {
+        ...this._relaxProps
+      }
     });
   }
 
