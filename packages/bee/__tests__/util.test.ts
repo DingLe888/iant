@@ -11,6 +11,8 @@ it('test getPathVal ', () => {
     }
   };
 
+  expect(getPathVal(data, 'list.0.addr.0.province')).toEqual('test');
+
   expect(getPathVal(data, ['list', 0, 'addr', '0', 'province'])).toEqual(
     'test'
   );

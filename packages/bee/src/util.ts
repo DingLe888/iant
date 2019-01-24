@@ -10,7 +10,7 @@ export const getPathVal = (
   data: Object,
   path: Array<string | number> | string
 ) => {
-  if (Array.isArray(path)) {
+  if (isArray(path)) {
     let result = data;
     for (let p of path) {
       result = result[p];
@@ -19,7 +19,11 @@ export const getPathVal = (
       }
     }
     return result;
-  } else {
+  } else if (isStr(path)) {
+    //support 'list.0.id'
+    if (path.indexOf('.') != -1) {
+      return getPathVal(data, path.split('.'));
+    }
     return data[path];
   }
 };
