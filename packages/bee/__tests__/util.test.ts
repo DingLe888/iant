@@ -1,4 +1,4 @@
-import { getPathVal, isArray, isFn, isStr, type } from '../src/util';
+import { getPathVal, isArray, isFn, isObj, isStr, type } from '../src/util';
 
 it('test getPathVal ', () => {
   const data = {
@@ -48,4 +48,9 @@ it('test is Fn', () => {
   const a = () => {};
   expect(isFn(a)).toEqual(true);
   expect(isFn('')).toEqual(false);
+});
+
+it('test is object', () => {
+  expect(isObj({})).toEqual(true);
+  expect(isObj(null)).toEqual(false);
 });

@@ -7,7 +7,7 @@ import { isFn } from '../src/util';
 
 interface IRelaxProps {
   id: number;
-  text: string;
+  lname: string;
   name: string;
   dispatch: Function;
   setState: Function;
@@ -16,7 +16,7 @@ interface IRelaxProps {
 const store = createStore({
   state: {
     name: 'test',
-    list: [{ id: 1, text: 'test' }]
+    list: [{ id: 1, name: 'test' }]
   }
 });
 
@@ -25,7 +25,7 @@ const TestRelax = () => (
     relaxProps={[
       //
       ['list', 0, 'id'],
-      'list.0.text',
+      { lname: 'list.0.name' },
       'name',
       'dispatch',
       'setState'
@@ -34,7 +34,7 @@ const TestRelax = () => (
       <div>
         {relaxProps.id}
         {relaxProps.name}
-        {relaxProps.text}
+        {relaxProps.lname}
         {isFn(relaxProps.dispatch) && 'yes'}
         {isFn(relaxProps.setState) && 'yes'}
       </div>

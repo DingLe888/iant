@@ -50,5 +50,14 @@ export const isStr = (param: any): param is string =>
 export const isArray = (param: any): param is Array<any> =>
   type(param) === '[object Array]';
 
+/**
+ * 判断参数是不是函数
+ */
 export const isFn = (param: any): param is Function =>
   type(param) === '[object Function]';
+
+/**
+ * 判断参数是不是对象
+ */
+export const isObj = (param: any): param is Object =>
+  type(param) === '[object Object]';
