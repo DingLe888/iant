@@ -4,7 +4,7 @@ import Store from './store';
 import { isArray, isStr } from './util';
 
 export interface IRenderProps {
-  relaxProps: Object;
+  relaxProps: any;
   [name: string]: any;
 }
 
@@ -51,8 +51,8 @@ export default class Relax extends React.Component<IProps> {
       }
       //如果是字符串
       else if (isStr(prop)) {
-        if (prop === 'dispatch') {
-          relaxData[prop] = store.dispatch;
+        if (prop === 'dispatch' || prop === 'setState') {
+          relaxData[prop] = store[prop];
         } else {
           relaxData[prop] = store.bigQuery(prop);
         }

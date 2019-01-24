@@ -3,6 +3,14 @@ import render from 'react-test-renderer';
 import createStore from '../src/create-store';
 import Provider from '../src/provider';
 import Relax from '../src/relax';
+import { isFn } from '../src/util';
+
+interface IRelaxProps {
+  id: number;
+  name: string;
+  dispatch: Function;
+  setState: Function;
+}
 
 const store = createStore({
   state: {
@@ -13,10 +21,19 @@ const store = createStore({
 
 const TestRelax = () => (
   <Relax
-    relaxProps={[['list', 0, 'id'], 'name']}
-    render={({ relaxProps }) => (
+    relaxProps={[
+      //
+      ['list', 0, 'id'],
+      'name',
+      'dispatch',
+      'setState'
+    ]}
+    render={({ relaxProps }: { relaxProps: IRelaxProps }) => (
       <div>
-        {(relaxProps as any).id} {(relaxProps as any).name}
+        {relaxProps.id}
+        {relaxProps.name}
+        {isFn(relaxProps.dispatch) && 'yes'}
+        {isFn(relaxProps.setState) && 'yes'}
       </div>
     )}
   />

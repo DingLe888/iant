@@ -61,7 +61,7 @@ export default class Store<T = Object> {
     return Object.freeze(this._state);
   }
 
-  setState(callback: (data: T) => void) {
+  setState = (callback: (data: T) => void) => {
     const state = produce(this._state, callback as any);
     if (state != this._state) {
       this._state = state;
@@ -74,7 +74,7 @@ export default class Store<T = Object> {
         subscribe(this._state);
       }
     }
-  }
+  };
 
   bigQuery(query: TPath | QueryLang) {
     if (isStr(query) || isArray(query)) {

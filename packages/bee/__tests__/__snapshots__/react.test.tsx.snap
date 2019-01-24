@@ -3,7 +3,8 @@
 exports[`test init 1`] = `
 <div>
   1
-   
   test
+  yes
+  yes
 </div>
 `;
