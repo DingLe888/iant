@@ -1,8 +1,6 @@
 import React from 'react';
 import render from 'react-test-renderer';
-import createStore from '../src/create-store';
-import Provider from '../src/provider';
-import Relax from '../src/relax';
+import { createStore, Provider, Relax } from '../src';
 import { isFn } from '../src/util';
 
 interface IRelaxProps {

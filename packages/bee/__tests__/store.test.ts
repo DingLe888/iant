@@ -1,7 +1,7 @@
-import createStore from '../src/create-store';
+import { createStore } from '../src';
 import { QL } from '../src/ql';
 import reducer from '../src/reducer';
-import Store from '../src/store';
+
 interface IState {
   list: Array<{ id: number; name: string }>;
   hello: string;
@@ -14,12 +14,10 @@ it('test store ', () => {
   };
   const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
 
-  const store = new Store<IState>(
-    createStore({
-      state: initState,
-      ql: { helloQL }
-    })
-  );
+  const store = createStore({
+    state: initState,
+    ql: { helloQL }
+  })();
 
   expect(store.getState()).toEqual({
     list: [{ id: 1, name: 'test' }],
@@ -67,13 +65,11 @@ it('test reducer', () => {
     }
   });
 
-  const store = new Store<IState>(
-    createStore<IState>({
-      state: initState,
-      ql: { helloQL },
-      reducer: reducer1
-    })
-  );
+  const store = createStore<IState>({
+    state: initState,
+    ql: { helloQL },
+    reducer: reducer1
+  })();
 
   store.dispatch('hello');
   expect(store.getState()).toEqual({

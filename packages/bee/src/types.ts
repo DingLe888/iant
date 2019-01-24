@@ -1,4 +1,5 @@
 import { Immutable } from 'immer';
+import { Store } from '.';
 import { QueryLang } from './ql';
 
 export type TPath = Array<string | number> | string | QueryLang;
@@ -24,4 +25,12 @@ export interface IReducerProps<T = Object> {
 
 export interface IReducer<T> {
   [name: string]: (base: Immutable<T>, param?: any) => Immutable<T>;
+}
+
+export interface IProviderProps {
+  store: () => Store;
+  children?: any;
+  onMounted?: () => void;
+  onWillMounted?: () => void;
+  onUpdated?: () => void;
 }

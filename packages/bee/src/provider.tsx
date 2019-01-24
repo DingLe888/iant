@@ -1,20 +1,12 @@
 import React from 'react';
 import { StoreContext } from './context';
-import Store from './store';
-import { IStoreProps } from './types';
+import { Store } from './store';
+import { IProviderProps } from './types';
 
-export interface IProps {
-  store: IStoreProps;
-  children?: any;
-  onMounted?: () => void;
-  onWillMounted?: () => void;
-  onUpdated?: () => void;
-}
-
-export default class Provider extends React.Component<IProps> {
-  constructor(props: IProps) {
+export default class Provider extends React.Component<IProviderProps> {
+  constructor(props: IProviderProps) {
     super(props);
-    this._store = new Store(this.props.store);
+    this._store = this.props.store();
   }
 
   private _store: Store;
