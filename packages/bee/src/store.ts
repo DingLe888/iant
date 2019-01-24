@@ -1,15 +1,16 @@
 import produce from 'immer';
 import { QueryLang } from './ql';
-import { IStoreProps, TPath, TSubscriber } from './types';
+import { IReducer, IStoreProps, TPath, TSubscriber } from './types';
 import { getPathVal, isArray, isStr } from './util';
 
 export default class Store<T = Object> {
-  constructor(props: IStoreProps) {
-    const { state = {}, ql } = props;
+  constructor(props: IStoreProps<T>) {
+    const { state = {}, ql, reducer } = props;
     this._state = state;
     this._cache = {};
     this._subscribe = [];
     this._ql = ql || this.ql();
+    this._reducer = reducer;
 
     //merge rx
     const rx = this._computeQL();
@@ -23,6 +24,7 @@ export default class Store<T = Object> {
   private _subscribe: Array<TSubscriber>;
   private _ql: { [name: string]: QueryLang };
   private _cache: { [key: number]: Array<any> };
+  private _reducer: IReducer<T>;
 
   ql() {
     return {};
@@ -34,6 +36,25 @@ export default class Store<T = Object> {
       r[k] = this.bigQuery(ql);
       return r;
     }, {});
+  }
+
+  dispatch(action: string, params?: Object) {
+    if (!this._reducer) {
+      return;
+    }
+    const handler = this._reducer[action];
+    const state = handler(this._state as any, params);
+    if (state != this._state) {
+      this._state = state;
+      const rx = this._computeQL();
+      this._state = {
+        ...this._state,
+        ...rx
+      };
+      for (let subscribe of this._subscribe) {
+        subscribe(this._state);
+      }
+    }
   }
 
   getState() {
@@ -49,7 +70,6 @@ export default class Store<T = Object> {
         ...this._state,
         ...rx
       };
-      console.log('===>', this._subscribe);
       for (let subscribe of this._subscribe) {
         subscribe(this._state);
       }

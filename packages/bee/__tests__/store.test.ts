@@ -1,5 +1,6 @@
 import createStore from '../src/create-store';
 import { QL } from '../src/ql';
+import reducer from '../src/reducer';
 import Store from '../src/store';
 interface IState {
   list: Array<{ id: number; name: string }>;
@@ -50,6 +51,34 @@ it('test store ', () => {
 
   expect(initState).toEqual({
     list: [{ id: 1, name: 'test' }],
+    hello: 'hello bee'
+  });
+});
+
+it('test reducer', () => {
+  let initState = {
+    list: [{ id: 1, name: 'test' }],
+    hello: 'hello bee'
+  };
+  const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
+  const reducer1 = reducer<IState>({
+    hello: data => {
+      data.list[0].id = 2;
+    }
+  });
+
+  const store = new Store<IState>(
+    createStore<IState>({
+      state: initState,
+      ql: { helloQL },
+      reducer: reducer1
+    })
+  );
+
+  store.dispatch('hello');
+  expect(store.getState()).toEqual({
+    list: [{ id: 2, name: 'test' }],
+    helloQL: 'hello bee!!',
     hello: 'hello bee'
   });
 });
