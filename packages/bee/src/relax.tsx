@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoreContext } from './context';
-import Store from './store';
+import { Store } from './store';
 import { isArray, isObj, isStr } from './util';
 
 export interface IRenderProps {
