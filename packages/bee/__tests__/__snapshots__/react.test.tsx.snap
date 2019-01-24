@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`test change state 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`test change state 2`] = `
+<div>
+  2
+</div>
+`;
+
 exports[`test init 1`] = `
 <div>
   1
@@ -8,3 +20,5 @@ exports[`test init 1`] = `
   yes
 </div>
 `;
+
+exports[`test no subscribe 1`] = `<div />`;

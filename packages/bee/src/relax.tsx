@@ -20,8 +20,42 @@ export default class Relax extends React.Component<IProps> {
 
   constructor(props: IProps, ctx: Store) {
     super(props);
+
     this._context = ctx;
+    this._isMounted = false;
+    this._relaxPropsMapper = this._reduceRelaxPropsMapper();
     this._relaxProps = this._computeRelaxProps();
+
+    if (!this._isAllFn()) {
+      this._unsubsciber = this._context.subscribe(this._handleSubscribe);
+    }
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  shouldComponentUpdate(nextProps: Object) {
+    const nextRelaxProps = this._computeRelaxProps();
+    if (nextProps !== this.props || nextRelaxProps != this._relaxProps) {
+      this._relaxProps = nextRelaxProps;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this._unsubsciber && this._unsubsciber();
+  }
+
+  componentWillUpdate() {
+    this._isMounted = false;
+  }
+
+  componentDidUpdate() {
+    this._isMounted = true;
   }
 
   render() {
@@ -34,15 +68,19 @@ export default class Relax extends React.Component<IProps> {
     });
   }
 
-  private _relaxProps: Object;
+  private _isMounted: boolean;
   private _context: Store;
+  private _relaxPropsMapper: Object;
+  private _relaxProps: Object;
+  private _unsubsciber: Function;
 
   _computeRelaxProps() {
     const store: Store = this._context;
-    const relaxData = this._reduceRelaxProps();
+    const mapper = this._relaxPropsMapper;
+    const relaxData = {};
 
-    for (let prop in relaxData) {
-      const val = relaxData[prop];
+    for (let prop in mapper) {
+      const val = mapper[prop];
       //如果是数组，取最后一个名字，作为可以
       if (isArray(val)) {
         relaxData[prop] = store.bigQuery(val);
@@ -60,7 +98,7 @@ export default class Relax extends React.Component<IProps> {
     return relaxData;
   }
 
-  _reduceRelaxProps() {
+  _reduceRelaxPropsMapper() {
     const { relaxProps } = this.props;
     const relaxData = Object.create(null);
 
@@ -89,5 +127,25 @@ export default class Relax extends React.Component<IProps> {
     }
 
     return relaxData;
+  }
+
+  _handleSubscribe = state => {
+    if (this._isMounted) {
+      this.setState(() => state);
+    }
+  };
+
+  _isAllFn() {
+    const mapper = this._relaxPropsMapper;
+    //如果所有注入的属性都是setState或者dispatch，就不去监听subscribe
+    for (let key in mapper) {
+      const val = mapper[key];
+      if (isStr(val) && (val === 'setState' || val === 'dispatch')) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+    return true;
   }
 }

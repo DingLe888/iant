@@ -52,3 +52,57 @@ it('test init', () => {
   const tree = render.create(<TestApp />);
   expect(tree).toMatchSnapshot();
 });
+
+it('test no subscribe', () => {
+  // let _ref = React.createRef();
+  let _ref = null as any;
+
+  const RelaxApp = () => (
+    <Relax
+      ref={ref => {
+        _ref = ref;
+      }}
+      relaxProps={['dispatch', { setState: 'setState' }]}
+      render={() => <div />}
+    />
+  );
+  const TestApp = () => (
+    <Provider store={store as any}>
+      <RelaxApp />
+    </Provider>
+  );
+
+  const tree = render.create(<TestApp />);
+  expect(tree).toMatchSnapshot();
+  expect(_ref._isAllFn()).toEqual(true);
+});
+
+it('test change state', () => {
+  const RelaxApp = () => (
+    <Relax
+      relaxProps={['list.0.id']}
+      render={({ relaxProps }) => <div>{relaxProps.id}</div>}
+    />
+  );
+
+  let _ref = null as any;
+  const TestApp = () => (
+    <Provider
+      store={store as any}
+      ref={ref => {
+        _ref = ref;
+      }}
+    >
+      <RelaxApp />
+    </Provider>
+  );
+
+  const tree = render.create(<TestApp />);
+  expect(tree.toJSON()).toMatchSnapshot();
+
+  _ref._store.setState(state => {
+    state.list[0].id = 2;
+  });
+
+  expect(tree.toJSON()).toMatchSnapshot();
+});
