@@ -3,7 +3,7 @@ import { QueryLang } from './ql';
 import { IReducer, IStoreProps, TPath, TSubscriber } from './types';
 import { getPathVal, isArray, isStr } from './util';
 
-export class Store<T = Object> {
+export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
     const { state = {}, ql, reducer } = props;
     this._state = state;
