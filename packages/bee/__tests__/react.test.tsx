@@ -3,13 +3,11 @@ import render from 'react-test-renderer';
 import { createStore, Provider, Relax } from '../src';
 import { isFn } from '../src/util';
 
-interface IRelaxProps {
-  id: number;
-  lname: string;
-  name: string;
-  dispatch: Function;
-  setState: Function;
-}
+// interface IRelaxProps {
+//   id: number;
+//   lname: string;
+//   name: string;
+// }
 
 const store = createStore({
   state: {
@@ -28,7 +26,7 @@ const TestRelax = () => (
       'dispatch',
       'setState'
     ]}
-    render={({ relaxProps }: { relaxProps: IRelaxProps }) => (
+    render={({ relaxProps }) => (
       <div>
         {relaxProps.id}
         {relaxProps.name}
@@ -103,4 +101,23 @@ it('test change state', () => {
   });
 
   expect(tree.toJSON()).toMatchSnapshot();
+});
+
+it('test defaultInject setState and dispatch', () => {
+  const RelaxApp = () => (
+    <Relax
+      render={props => {
+        console.log('---?', props);
+        return <div>{isFn(props.relaxProps.setState) && 'yes'}</div>;
+      }}
+    />
+  );
+  const TestApp = () => (
+    <Provider store={store as any}>
+      <RelaxApp />
+    </Provider>
+  );
+
+  const tree = render.create(<TestApp />).toJSON();
+  expect(tree).toMatchSnapshot();
 });

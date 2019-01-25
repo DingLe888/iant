@@ -3,13 +3,19 @@ import { StoreContext } from './context';
 import { Store } from './store';
 import { isArray, isObj, isStr } from './util';
 
+export interface IRelaxProps {
+  setState: (cb: (data: Object) => void) => void;
+  dispatch: (action: string, params?: any) => void;
+  [name: string]: any;
+}
+
 export interface IRenderProps {
-  relaxProps: any;
+  relaxProps: IRelaxProps;
   [name: string]: any;
 }
 
 export interface IProps {
-  relaxProps: Array<any>;
+  relaxProps?: Array<any>;
   render: (props: IRenderProps) => React.ReactElement<Object>;
   [name: string]: any;
 }
@@ -17,6 +23,10 @@ export interface IProps {
 export default class Relax extends React.Component<IProps> {
   static displayName = 'RelaxContext';
   static contextType = StoreContext;
+
+  static defaultProps = {
+    relaxProps: []
+  };
 
   constructor(props: IProps, ctx: Store) {
     super(props);
@@ -59,7 +69,7 @@ export default class Relax extends React.Component<IProps> {
   }
 
   render() {
-    const { render, relaxProps, ...other } = this.props;
+    const { render, ...other } = this.props;
     return render({
       ...other,
       relaxProps: {
@@ -71,13 +81,13 @@ export default class Relax extends React.Component<IProps> {
   private _isMounted: boolean;
   private _context: Store;
   private _relaxPropsMapper: Object;
-  private _relaxProps: Object;
+  private _relaxProps: IRelaxProps;
   private _unsubsciber: Function;
 
   _computeRelaxProps() {
     const store: Store = this._context;
     const mapper = this._relaxPropsMapper;
-    const relaxData = {};
+    const relaxData = {} as IRelaxProps;
 
     for (let prop in mapper) {
       const val = mapper[prop];
@@ -100,7 +110,11 @@ export default class Relax extends React.Component<IProps> {
 
   _reduceRelaxPropsMapper() {
     const { relaxProps } = this.props;
-    const relaxData = Object.create(null);
+    //默认注入setState/dispatch
+    const relaxData = Object.create({
+      setState: 'setState',
+      dispatch: 'dispatch'
+    });
 
     for (let prop of relaxProps) {
       if (isArray(prop)) {
@@ -129,7 +143,7 @@ export default class Relax extends React.Component<IProps> {
     return relaxData;
   }
 
-  _handleSubscribe = state => {
+  _handleSubscribe = (state: Object) => {
     if (this._isMounted) {
       this.setState(() => state);
     }

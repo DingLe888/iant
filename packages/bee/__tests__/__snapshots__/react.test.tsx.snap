@@ -12,6 +12,12 @@ exports[`test change state 2`] = `
 </div>
 `;
 
+exports[`test defaultInject setState and dispatch 1`] = `
+<div>
+  yes
+</div>
+`;
+
 exports[`test init 1`] = `
 <div>
   1
