@@ -1,13 +1,16 @@
 import React from 'react';
 import render from 'react-test-renderer';
 import { createStore, Provider, Relax } from '../src';
+import { TRenderProps } from '../src/relax';
 import { isFn } from '../src/util';
 
-// interface IRelaxProps {
-//   id: number;
-//   lname: string;
-//   name: string;
-// }
+type TRelaxProps = TRenderProps<{
+  relaxProps: {
+    id: number;
+    lname: string;
+    name: string;
+  };
+}>;
 
 const store = createStore({
   state: {
@@ -22,24 +25,22 @@ const TestRelax = () => (
       //
       ['list', 0, 'id'],
       { lname: 'list.0.name' },
-      'name',
-      'dispatch',
-      'setState'
+      'name'
     ]}
-    render={({ relaxProps }) => (
+    render={(props: TRelaxProps) => (
       <div>
-        {relaxProps.id}
-        {relaxProps.name}
-        {relaxProps.lname}
-        {isFn(relaxProps.dispatch) && 'yes'}
-        {isFn(relaxProps.setState) && 'yes'}
+        {props.relaxProps.id}
+        {props.relaxProps.name}
+        {props.relaxProps.lname}
+        {isFn(props.relaxProps.dispatch) && 'yes'}
+        {isFn(props.relaxProps.setState) && 'yes'}
       </div>
     )}
   />
 );
 
 const TestApp = () => (
-  <Provider store={store as any}>
+  <Provider store={store}>
     <TestRelax />
   </Provider>
 );
@@ -50,7 +51,6 @@ it('test init', () => {
 });
 
 it('test no subscribe', () => {
-  // let _ref = React.createRef();
   let _ref = null as any;
 
   const RelaxApp = () => (
@@ -58,12 +58,11 @@ it('test no subscribe', () => {
       ref={ref => {
         _ref = ref;
       }}
-      relaxProps={['dispatch', { setState: 'setState' }]}
       render={() => <div />}
     />
   );
   const TestApp = () => (
-    <Provider store={store as any}>
+    <Provider store={store}>
       <RelaxApp />
     </Provider>
   );
@@ -77,14 +76,14 @@ it('test change state', () => {
   const RelaxApp = () => (
     <Relax
       relaxProps={['list.0.id']}
-      render={({ relaxProps }) => <div>{relaxProps.id}</div>}
+      render={({ relaxProps }: TRelaxProps) => <div>{relaxProps.id}</div>}
     />
   );
 
   let _ref = null as any;
   const TestApp = () => (
     <Provider
-      store={store as any}
+      store={store}
       ref={ref => {
         _ref = ref;
       }}
@@ -95,7 +94,6 @@ it('test change state', () => {
 
   const tree = render.create(<TestApp />);
   expect(tree.toJSON()).toMatchSnapshot();
-
   _ref._store.setState(state => {
     state.list[0].id = 2;
   });
@@ -106,14 +104,13 @@ it('test change state', () => {
 it('test defaultInject setState and dispatch', () => {
   const RelaxApp = () => (
     <Relax
-      render={props => {
-        console.log('---?', props);
+      render={(props: TRelaxProps) => {
         return <div>{isFn(props.relaxProps.setState) && 'yes'}</div>;
       }}
     />
   );
   const TestApp = () => (
-    <Provider store={store as any}>
+    <Provider store={store}>
       <RelaxApp />
     </Provider>
   );

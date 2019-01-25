@@ -6,7 +6,6 @@ import { isArray, isObj, isStr } from './util';
 export interface IRelaxProps {
   setState: (cb: (data: Object) => void) => void;
   dispatch: (action: string, params?: any) => void;
-  [name: string]: any;
 }
 
 export interface IRenderProps {
@@ -14,9 +13,13 @@ export interface IRenderProps {
   [name: string]: any;
 }
 
+export type TRenderProps<T = {}> = keyof T extends 'relaxProps'
+  ? { [K in keyof T]: K extends 'relaxProps' ? T[K] & IRelaxProps : T[K] }
+  : T & IRelaxProps;
+
 export interface IProps {
   relaxProps?: Array<any>;
-  render: (props: IRenderProps) => React.ReactElement<Object>;
+  render: (props: TRenderProps) => React.ReactElement<Object>;
   [name: string]: any;
 }
 

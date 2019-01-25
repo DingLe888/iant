@@ -1,6 +1,6 @@
 import { Immutable } from 'immer';
-import { Store } from '.';
 import { QueryLang } from './ql';
+import { Store } from './store';
 
 export type TPath = Array<string | number> | string | QueryLang;
 
@@ -31,6 +31,6 @@ export interface IProviderProps {
   store: () => Store;
   children?: any;
   onMounted?: () => void;
-  onWillMounted?: () => void;
+  onWillMount?: () => void;
   onUpdated?: () => void;
 }

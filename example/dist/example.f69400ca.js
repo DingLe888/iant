@@ -2252,16 +2252,13 @@ var Provider = /** @class */ (function (_super) {
         return _this;
     }
     Provider.prototype.componentWillMount = function () {
-        this.props.onWillMounted && this.props.onWillMounted();
+        this.props.onWillMount && this.props.onWillMount();
     };
     Provider.prototype.componentDidMount = function () {
         this.props.onMounted && this.props.onMounted();
     };
     Provider.prototype.componentDidUpdate = function () {
         this.props.onUpdated && this.props.onUpdated();
-    };
-    Provider.prototype.componentDidCatch = function () {
-        //error handler
     };
     Provider.prototype.render = function () {
         return (react_1.default.createElement(context_1.StoreContext.Provider, { value: this._store }, this.props.children));
@@ -3563,7 +3560,7 @@ var Relax = /** @class */ (function (_super) {
         this._isMounted = true;
     };
     Relax.prototype.render = function () {
-        var _a = this.props, render = _a.render, relaxProps = _a.relaxProps, other = __rest(_a, ["render", "relaxProps"]);
+        var _a = this.props, render = _a.render, other = __rest(_a, ["render"]);
         return render(__assign({}, other, { relaxProps: __assign({}, this._relaxProps) }));
     };
     Relax.prototype._computeRelaxProps = function () {
@@ -3590,7 +3587,11 @@ var Relax = /** @class */ (function (_super) {
     };
     Relax.prototype._reduceRelaxPropsMapper = function () {
         var relaxProps = this.props.relaxProps;
-        var relaxData = Object.create(null);
+        //默认注入setState/dispatch
+        var relaxData = Object.create({
+            setState: 'setState',
+            dispatch: 'dispatch'
+        });
         for (var _i = 0, relaxProps_1 = relaxProps; _i < relaxProps_1.length; _i++) {
             var prop = relaxProps_1[_i];
             if (util_1.isArray(prop)) {
@@ -3636,6 +3637,9 @@ var Relax = /** @class */ (function (_super) {
     };
     Relax.displayName = 'RelaxContext';
     Relax.contextType = context_1.StoreContext;
+    Relax.defaultProps = {
+        relaxProps: []
+    };
     return Relax;
 }(react_1.default.Component));
 exports.default = Relax;
@@ -3804,7 +3808,6 @@ var relax_1 = __importDefault(require("./relax"));
 exports.Relax = relax_1.default;
 var store_1 = require("./store");
 exports.createStore = store_1.createStore;
-exports.Store = store_1.Store;
 
 },{"./provider":"../node_modules/bee/lib/provider.js","./reducer":"../node_modules/bee/lib/reducer.js","./relax":"../node_modules/bee/lib/relax.js","./store":"../node_modules/bee/lib/store.js"}],"node_modules/object-assign/index.js":[function(require,module,exports) {
 /*
@@ -28203,7 +28206,7 @@ var react_1 = __importDefault(require("react"));
 
 function Text() {
   return react_1.default.createElement(bee_1.Relax, {
-    relaxProps: ['id', 'setState'],
+    relaxProps: ['id'],
     render: function render(_ref) {
       var relaxProps = _ref.relaxProps;
       var id = relaxProps.id,
@@ -28294,7 +28297,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63149" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63651" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

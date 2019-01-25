@@ -12,7 +12,7 @@ export default class Provider extends React.Component<IProviderProps> {
   private _store: Store;
 
   componentWillMount() {
-    this.props.onWillMounted && this.props.onWillMounted();
+    this.props.onWillMount && this.props.onWillMount();
   }
 
   componentDidMount() {
@@ -21,10 +21,6 @@ export default class Provider extends React.Component<IProviderProps> {
 
   componentDidUpdate() {
     this.props.onUpdated && this.props.onUpdated();
-  }
-
-  componentDidCatch() {
-    //error handler
   }
 
   render() {

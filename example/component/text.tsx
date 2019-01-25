@@ -12,7 +12,7 @@ export interface IProps {
 export default function Text() {
   return (
     <Relax
-      relaxProps={['id', 'setState']}
+      relaxProps={['id']}
       render={({ relaxProps }: IProps) => {
         const { id, setState } = relaxProps;
 
