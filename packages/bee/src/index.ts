@@ -1,6 +1,6 @@
 import Provider from './provider';
 import reducer from './reducer';
 import Relax from './relax';
-import { createStore, Store } from './store';
+import { createStore } from './store';
 
-export { Store, createStore, Relax, reducer, Provider };
+export { createStore, Relax, reducer, Provider };
