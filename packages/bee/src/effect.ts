@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { IReducer, IReducerProps } from './types';
+import { IEffect, IEffectProps } from './types';
 
-export default function effect<T>(obj: IReducerProps<T>) {
-  const immerHandler = {} as IReducer<T>;
+export default function effect<T>(obj: IEffectProps<T>) {
+  const immerHandler = {} as IEffect<T>;
   //all handler wrapper produce method
   for (let key in obj) {
     const handler = obj[key];
