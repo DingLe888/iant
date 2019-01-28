@@ -1,8 +1,6 @@
 import React from 'react';
 import render from 'react-test-renderer';
-import { createStore, Provider, Relax } from '../src';
-import { TRenderProps } from '../src/relax';
-import { isFn } from '../src/util';
+import { createStore, Provider, Relax, TRenderProps, _ } from '../src';
 
 type TRelaxProps = TRenderProps<{
   relaxProps: {
@@ -32,8 +30,8 @@ const TestRelax = () => (
         {props.relaxProps.id}
         {props.relaxProps.name}
         {props.relaxProps.lname}
-        {isFn(props.relaxProps.dispatch) && 'yes'}
-        {isFn(props.relaxProps.setState) && 'yes'}
+        {_.isFn(props.relaxProps.dispatch) && 'yes'}
+        {_.isFn(props.relaxProps.setState) && 'yes'}
       </div>
     )}
   />
@@ -105,7 +103,7 @@ it('test defaultInject setState and dispatch', () => {
   const RelaxApp = () => (
     <Relax
       render={(props: TRelaxProps) => {
-        return <div>{isFn(props.relaxProps.setState) && 'yes'}</div>;
+        return <div>{_.isFn(props.relaxProps.setState) && 'yes'}</div>;
       }}
     />
   );

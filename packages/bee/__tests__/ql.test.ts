@@ -1,4 +1,4 @@
-import { QL } from '../src/ql';
+import { QL } from '../src';
 
 it('test ql', () => {
   const handler = (foo: string, bar: string) => foo + bar;

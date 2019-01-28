@@ -1,6 +1,4 @@
-import { createStore } from '../src';
-import { QL } from '../src/ql';
-import reducer from '../src/reducer';
+import { createStore, effect, QL } from '../src';
 
 interface IState {
   list: Array<{ id: number; name: string }>;
@@ -59,7 +57,7 @@ it('test reducer', () => {
     hello: 'hello bee'
   };
   const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
-  const reducer1 = reducer<IState>({
+  const effect1 = effect<IState>({
     hello: data => {
       data.list[0].id = 2;
     }
@@ -68,7 +66,7 @@ it('test reducer', () => {
   const store = createStore<IState>({
     state: initState,
     ql: { helloQL },
-    reducer: reducer1
+    effect: effect1
   })();
 
   store.dispatch('hello');

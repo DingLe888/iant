@@ -1,16 +1,16 @@
 import produce from 'immer';
 import { QueryLang } from './ql';
-import { IReducer, IStoreProps, TPath, TSubscriber } from './types';
+import { IEffect, IStoreProps, TPath, TSubscriber } from './types';
 import { getPathVal, isArray, isStr } from './util';
 
 export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
-    const { state = {}, ql, reducer } = props;
+    const { state = {}, ql, effect } = props;
     this._state = state;
     this._cache = {};
     this._subscribe = [];
     this._ql = ql || this.ql();
-    this._reducer = reducer;
+    this._effect = effect;
 
     //merge rx
     const rx = this._computeQL();
@@ -24,7 +24,7 @@ export class Store<T = {}> {
   private _subscribe: Array<TSubscriber>;
   private _ql: { [name: string]: QueryLang };
   private _cache: { [key: number]: Array<any> };
-  private _reducer: IReducer<T>;
+  private _effect: IEffect<T>;
 
   ql() {
     return {};
@@ -39,10 +39,10 @@ export class Store<T = {}> {
   }
 
   dispatch = (action: string, params?: Object) => {
-    if (!this._reducer) {
+    if (!this._effect) {
       return;
     }
-    const handler = this._reducer[action];
+    const handler = this._effect[action];
     const state = handler(this._state as any, params);
     if (state != this._state) {
       this._state = state;
