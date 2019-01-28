@@ -19,7 +19,7 @@ export type TRenderProps<T = {}> = keyof T extends 'relaxProps'
 
 export interface IProps {
   relaxProps?: Array<any>;
-  render: (props: TRenderProps) => React.ReactElement<Object>;
+  render: (props: TRenderProps<any>) => React.ReactElement<Object>;
   [name: string]: any;
 }
 

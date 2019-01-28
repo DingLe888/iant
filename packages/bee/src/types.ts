@@ -28,7 +28,7 @@ export interface IReducer<T> {
 }
 
 export interface IProviderProps {
-  store: () => Store;
+  store: () => Store<any>;
   children?: any;
   onMounted?: () => void;
   onWillMount?: () => void;
