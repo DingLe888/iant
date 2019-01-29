@@ -17,15 +17,10 @@ const store = createStore({
   }
 });
 
-const TestRelax = () => (
-  <Relax
-    relaxProps={[
-      //
-      ['list', 0, 'id'],
-      { lname: 'list.0.name' },
-      'name'
-    ]}
-    render={(props: TRelaxProps) => (
+const TestRelax = Relax(
+  [['list', 0, 'id'], { lname: 'list.0.name' }, 'name'],
+  (props: TRelaxProps) => {
+    return (
       <div>
         {props.relaxProps.id}
         {props.relaxProps.name}
@@ -33,8 +28,8 @@ const TestRelax = () => (
         {_.isFn(props.relaxProps.dispatch) && 'yes'}
         {_.isFn(props.relaxProps.setState) && 'yes'}
       </div>
-    )}
-  />
+    );
+  }
 );
 
 const TestApp = () => (
@@ -49,16 +44,7 @@ it('test init', () => {
 });
 
 it('test no subscribe', () => {
-  let _ref = null as any;
-
-  const RelaxApp = () => (
-    <Relax
-      ref={ref => {
-        _ref = ref;
-      }}
-      render={() => <div />}
-    />
-  );
+  const RelaxApp = Relax([], () => <div />);
   const TestApp = () => (
     <Provider store={store}>
       <RelaxApp />
@@ -67,16 +53,12 @@ it('test no subscribe', () => {
 
   const tree = render.create(<TestApp />);
   expect(tree).toMatchSnapshot();
-  expect(_ref._isAllFn()).toEqual(true);
 });
 
 it('test change state', () => {
-  const RelaxApp = () => (
-    <Relax
-      relaxProps={['list.0.id']}
-      render={({ relaxProps }: TRelaxProps) => <div>{relaxProps.id}</div>}
-    />
-  );
+  const RelaxApp = Relax(['list.0.id'], ({ relaxProps }: TRelaxProps) => (
+    <div>{relaxProps.id}</div>
+  ));
 
   let _ref = null as any;
   const TestApp = () => (
@@ -100,13 +82,10 @@ it('test change state', () => {
 });
 
 it('test defaultInject setState and dispatch', () => {
-  const RelaxApp = () => (
-    <Relax
-      render={(props: TRelaxProps) => {
-        return <div>{_.isFn(props.relaxProps.setState) && 'yes'}</div>;
-      }}
-    />
-  );
+  const RelaxApp = Relax([], (props: TRelaxProps) => {
+    return <div>{_.isFn(props.relaxProps.setState) && 'yes'}</div>;
+  });
+
   const TestApp = () => (
     <Provider store={store}>
       <RelaxApp />

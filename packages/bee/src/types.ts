@@ -1,4 +1,3 @@
-import { Immutable } from 'immer';
 import { QueryLang } from './ql';
 import { Store } from './store';
 
@@ -25,20 +24,12 @@ export interface IStoreProps<T = {}> {
 
 export type TSubscriber = (data: Object) => void;
 
-export interface IEffectProps<T = Object> {
-  [name: string]: (data: T, param?: any) => any;
-}
-
-export interface IEffect<T> {
-  [name: string]: (base: Immutable<T>, param?: any) => Immutable<T>;
-}
-
 export interface IProviderProps {
   store: () => Store<any>;
   children?: any;
-  onMounted?: (store: Store) => void;
-  onWillMount?: (store: Store) => void;
-  onUpdated?: (store: Store) => void;
+  onMounted?: (store?: Store) => void;
+  onWillMount?: (store?: Store) => void;
+  onUpdated?: (store?: Store) => void;
 }
 
 export interface IRelaxProps {
@@ -54,9 +45,3 @@ export interface IRenderProps {
 export type TRenderProps<T = {}> = keyof T extends 'relaxProps'
   ? { [K in keyof T]: K extends 'relaxProps' ? T[K] & IRelaxProps : T[K] }
   : T & IRelaxProps;
-
-export interface IProps {
-  relaxProps?: Array<any>;
-  render: (props: TRenderProps<any>) => React.ReactElement<Object>;
-  [name: string]: any;
-}
