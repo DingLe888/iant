@@ -59,5 +59,5 @@ export const isFn = (param: any): param is Function =>
 /**
  * 判断参数是不是对象
  */
-export const isObj = (param: any): param is Object =>
+export const isObj = (param: any): param is object =>
   type(param) === '[object Object]';

@@ -1,6 +1,7 @@
-import { Immutable } from 'immer';
 import { QueryLang } from './ql';
 import { Store } from './store';
+
+export type TActionHandler = (store: Store<any>, param?: any) => void;
 
 export type TPath = Array<string | number> | string | QueryLang;
 
@@ -11,26 +12,36 @@ export interface IQLangProps {
   lang: TQLang;
 }
 
-export interface IStoreProps<T = Object> {
+export type TActionRetFn = () => { msg: string; handler: TActionHandler };
+
+export type TAction = (msg: string, handler: TActionHandler) => TActionRetFn;
+
+export interface IStoreProps<T = {}> {
   state?: T;
   ql?: { [name: string]: QueryLang };
-  reducer?: IReducer<T>;
+  action?: { [name: string]: TActionRetFn };
 }
 
 export type TSubscriber = (data: Object) => void;
 
-export interface IReducerProps<T = Object> {
-  [name: string]: (data: T, param?: any) => any;
-}
-
-export interface IReducer<T> {
-  [name: string]: (base: Immutable<T>, param?: any) => Immutable<T>;
-}
-
 export interface IProviderProps {
-  store: () => Store;
+  store: () => Store<any>;
   children?: any;
-  onMounted?: () => void;
-  onWillMount?: () => void;
-  onUpdated?: () => void;
+  onMounted?: (store?: Store) => void;
+  onWillMount?: (store?: Store) => void;
+  onUpdated?: (store?: Store) => void;
 }
+
+export interface IRelaxProps {
+  setState: (cb: (data: Object) => void) => void;
+  dispatch: (action: string, params?: any) => void;
+}
+
+export interface IRenderProps {
+  relaxProps: IRelaxProps;
+  [name: string]: any;
+}
+
+export type TRenderProps<T = {}> = keyof T extends 'relaxProps'
+  ? { [K in keyof T]: K extends 'relaxProps' ? T[K] & IRelaxProps : T[K] }
+  : T & IRelaxProps;

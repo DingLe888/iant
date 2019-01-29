@@ -9,21 +9,14 @@ export interface IProps {
   };
 }
 
-export default function Text() {
-  return (
-    <Relax
-      relaxProps={['id']}
-      render={({ relaxProps }: IProps) => {
-        const { id, setState } = relaxProps;
+export default Relax(['id'], (props: IProps) => {
+  const { id, setState } = props.relaxProps;
 
-        const click = () => {
-          setState(data => {
-            data.id = ++data.id;
-          });
-        };
+  const click = () => {
+    setState(data => {
+      data.id = ++data.id;
+    });
+  };
 
-        return <div onClick={click}>{id}</div>;
-      }}
-    />
-  );
-}
+  return <div onClick={click}>{id}</div>;
+});

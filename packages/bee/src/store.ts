@@ -1,60 +1,77 @@
 import produce from 'immer';
+import ReactDOM from 'react-dom';
 import { QueryLang } from './ql';
-import { IReducer, IStoreProps, TPath, TSubscriber } from './types';
+import {
+  IStoreProps,
+  TActionHandler,
+  TActionRetFn,
+  TPath,
+  TSubscriber
+} from './types';
 import { getPathVal, isArray, isStr } from './util';
 
-export class Store<T = Object> {
+/**
+ * 是不是可以批量处理
+ * ReactDOM'sunstable_batchedUpdates 可以很酷的解决父子组件级联渲染的问题
+ * 可惜 Preact 不支持，只能靠 Immutable 的不可变这个特性来挡着了
+ * 在 react-native 环境中，unstable_batchedUpdates 是在 react-native 对象中
+ * 所以我们的 babel-plugin-plume2 就是去解决这个问题
+ */
+const batchedUpdates =
+  ReactDOM.unstable_batchedUpdates ||
+  function(cb: Function) {
+    cb();
+  };
+
+export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
-    const { state = {}, ql, reducer } = props;
-    this._state = state;
+    const { state = {}, ql = {}, action = {} } = props;
+    this._ql = ql;
+    this._state = state as T;
+    this._action = this._reduceAction(action);
+
     this._cache = {};
     this._subscribe = [];
-    this._ql = ql || this.ql();
-    this._reducer = reducer;
 
-    //merge rx
-    const rx = this._computeQL();
+    this._computeQL();
+  }
+
+  private _state: T;
+  private _subscribe: Array<TSubscriber>;
+  private _ql: { [name: string]: QueryLang };
+  private _cache: { [key: number]: Array<any> };
+  private _action: { [name: string]: TActionHandler };
+
+  private _computeQL() {
+    const rx = Object.keys(this._ql).reduce((r, k) => {
+      const ql = this._ql[k];
+      r[k] = this.bigQuery(ql);
+      return r;
+    }, {});
+
     this._state = {
       ...this._state,
       ...rx
     };
   }
 
-  private _state: Object;
-  private _subscribe: Array<TSubscriber>;
-  private _ql: { [name: string]: QueryLang };
-  private _cache: { [key: number]: Array<any> };
-  private _reducer: IReducer<T>;
-
-  ql() {
-    return {};
-  }
-
-  _computeQL() {
-    return Object.keys(this._ql).reduce((r, k) => {
-      const ql = this._ql[k];
-      r[k] = this.bigQuery(ql);
+  private _reduceAction(actions: {
+    [name: string]: TActionRetFn;
+  }): { [name: string]: TActionHandler } {
+    return Object.keys(actions).reduce((r, key) => {
+      const action = actions[key];
+      const { msg, handler } = action();
+      r[msg] = handler;
       return r;
     }, {});
   }
 
   dispatch = (action: string, params?: Object) => {
-    if (!this._reducer) {
+    const handler = this._action[action];
+    if (!handler) {
       return;
     }
-    const handler = this._reducer[action];
-    const state = handler(this._state as any, params);
-    if (state != this._state) {
-      this._state = state;
-      const rx = this._computeQL();
-      this._state = {
-        ...this._state,
-        ...rx
-      };
-      for (let subscribe of this._subscribe) {
-        subscribe(this._state);
-      }
-    }
+    handler(this, params);
   };
 
   getState() {
@@ -64,15 +81,13 @@ export class Store<T = Object> {
   setState = (callback: (data: T) => void) => {
     const state = produce(this._state, callback as any);
     if (state != this._state) {
-      this._state = state;
-      const rx = this._computeQL();
-      this._state = {
-        ...this._state,
-        ...rx
-      };
-      for (let subscribe of this._subscribe) {
-        subscribe(this._state);
-      }
+      this._state = state as T;
+      this._computeQL();
+      batchedUpdates(() => {
+        for (let subscribe of this._subscribe) {
+          subscribe(this._state);
+        }
+      });
     }
   };
 
@@ -120,6 +135,5 @@ export class Store<T = Object> {
   }
 }
 
-export const createStore = <T>(props: IStoreProps<T>) => {
-  return () => new Store(props);
-};
+export const createStore = <T>(props: IStoreProps<T>) => () =>
+  new Store<T>(props);
