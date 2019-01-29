@@ -1,13 +1,13 @@
 {
   "name": "iant",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-alpha1",
   "description": "",
   "main": "./lib/index.js",
-  "typs": "./lib/types/index.d.ts",
+  "types": "./lib/typings/index.d.ts",
   "dependencies": {
     "immer": "^1.10.4"
   },
   "keywords": [],
-  "author": "hufeng<fengmi99@gmail.com>",
+  "author": "hufeng<hufeng@qianmi.com>",
   "license": "MIT"
 }

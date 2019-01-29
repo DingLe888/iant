@@ -1,7 +1,7 @@
 build: clean
-	npx tsc --project ./packages/bee
+	npx tsc --project ./packages/iant
 	@echo "build successfully 👨‍❤️‍👨"
 
 clean:
-	rm -rf ./packages/bee/lib
+	rm -rf ./packages/iant/lib
 	@echo "clean successfully 💖 \n"
