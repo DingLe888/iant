@@ -1,12 +1,12 @@
-import { Provider } from 'bee';
+import { Provider } from 'iant';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Text from './component/text';
+import Counter from './component/counter';
 import store from './store';
 
 const ExampleApp = () => (
   <Provider store={store}>
-    <Text />
+    <Counter />
   </Provider>
 );
 

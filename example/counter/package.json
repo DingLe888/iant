@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
+    "iant": "^0.0.1-alpha",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   }
