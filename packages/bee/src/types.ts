@@ -36,9 +36,9 @@ export interface IEffect<T> {
 export interface IProviderProps {
   store: () => Store<any>;
   children?: any;
-  onMounted?: () => void;
-  onWillMount?: () => void;
-  onUpdated?: () => void;
+  onMounted?: (store: Store) => void;
+  onWillMount?: (store: Store) => void;
+  onUpdated?: (store: Store) => void;
 }
 
 export interface IRelaxProps {

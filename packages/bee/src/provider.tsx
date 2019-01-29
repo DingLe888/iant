@@ -16,7 +16,7 @@ export default class Provider extends React.Component<IProviderProps> {
   }
 
   componentDidMount() {
-    this.props.onMounted && this.props.onMounted();
+    this.props.onMounted && this.props.onMounted(this._store);
   }
 
   componentDidUpdate() {
