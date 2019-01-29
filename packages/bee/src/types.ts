@@ -2,6 +2,8 @@ import { Immutable } from 'immer';
 import { QueryLang } from './ql';
 import { Store } from './store';
 
+export type TActionHandler = (store: Store<any>, param?: any) => void;
+
 export type TPath = Array<string | number> | string | QueryLang;
 
 export type TQLang = Array<TPath | Function>;
@@ -11,10 +13,14 @@ export interface IQLangProps {
   lang: TQLang;
 }
 
-export interface IStoreProps<T = Object> {
+export type TActionRetFn = () => { msg: string; handler: TActionHandler };
+
+export type TAction = (msg: string, handler: TActionHandler) => TActionRetFn;
+
+export interface IStoreProps<T = {}> {
   state?: T;
   ql?: { [name: string]: QueryLang };
-  effect?: IEffect<T>;
+  action?: { [name: string]: TActionRetFn };
 }
 
 export type TSubscriber = (data: Object) => void;

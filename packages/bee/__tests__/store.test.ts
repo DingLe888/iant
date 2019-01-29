@@ -1,4 +1,4 @@
-import { createStore, effect, QL } from '../src';
+import { action, createStore, QL, Store } from '../src';
 
 interface IState {
   list: Array<{ id: number; name: string }>;
@@ -51,25 +51,26 @@ it('test store ', () => {
   });
 });
 
-it('test reducer', () => {
+it('test action', () => {
   let initState = {
     list: [{ id: 1, name: 'test' }],
     hello: 'hello bee'
   };
   const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
-  const effect1 = effect<IState>({
-    hello: data => {
+  const effect = action('hello', (store: Store<IState>) => {
+    store.setState(data => {
       data.list[0].id = 2;
-    }
+    });
   });
 
   const store = createStore<IState>({
     state: initState,
     ql: { helloQL },
-    effect: effect1
+    action: { effect }
   })();
 
   store.dispatch('hello');
+
   expect(store.getState()).toEqual({
     list: [{ id: 2, name: 'test' }],
     helloQL: 'hello bee!!',

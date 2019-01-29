@@ -1,9 +1,9 @@
-import { default as effect, default as reducer } from './effect';
+import action from './action';
 import Provider from './provider';
 import { QL } from './ql';
 import Relax from './relax';
-import { createStore } from './store';
+import { createStore, Store } from './store';
 import { TRenderProps } from './types';
 import * as _ from './util';
 
-export { createStore, Relax, reducer, Provider, QL, _, TRenderProps, effect };
+export { createStore, Relax, Provider, QL, _, TRenderProps, action, Store };
