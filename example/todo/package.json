@@ -1,17 +1,16 @@
 {
-  "name": "example",
+  "name": "todo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel serve index.html",
-    "build": "parcel build index.html"
+    "start": "parcel serve index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/react": "^16.7.20",
+    "@types/react": "^16.7.22",
     "@types/react-dom": "^16.0.11",
     "iant": "^0.0.1-alpha1",
     "react": "^16.7.0",

@@ -14,7 +14,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.7.20":
+"@types/react@*", "@types/react@^16.7.22":
   version "16.7.22"
   resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.7.22.tgz#5bc6d166d5ac34b835756f0b736c7b1af0043e81"
   integrity sha1-W8bRZtWsNLg1dW8Lc2x7GvAEPoE=
