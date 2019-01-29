@@ -42,7 +42,7 @@ export class Store<T = {}> {
   private _cache: { [key: number]: Array<any> };
   private _action: { [name: string]: TActionHandler };
 
-  _computeQL() {
+  private _computeQL() {
     const rx = Object.keys(this._ql).reduce((r, k) => {
       const ql = this._ql[k];
       r[k] = this.bigQuery(ql);
@@ -55,7 +55,7 @@ export class Store<T = {}> {
     };
   }
 
-  _reduceAction(actions: {
+  private _reduceAction(actions: {
     [name: string]: TActionRetFn;
   }): { [name: string]: TActionHandler } {
     return Object.keys(actions).reduce((r, key) => {
