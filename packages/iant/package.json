@@ -1,6 +1,6 @@
 {
-  "name": "bee",
-  "version": "1.0.0",
+  "name": "iant",
+  "version": "0.0.1-alpha",
   "description": "",
   "main": "./lib/index.js",
   "typs": "./lib/types/index.d.ts",
