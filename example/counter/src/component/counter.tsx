@@ -1,11 +1,11 @@
-import { Relax, TRenderProps } from 'iant';
+import { useRelax } from 'iant';
 import React from 'react';
 import { IState } from '../store';
 
-type TProps = TRenderProps<{ relaxProps: { count: IState['count'] } }>;
+type TRelax = { count: IState['count'] };
 
-export default Relax(['count'], (props: TProps) => {
-  const { count, setState } = props.relaxProps;
+export default function Counter() {
+  const [relax, { setState }] = useRelax<TRelax>(['count']);
 
   const inc = () =>
     setState((data: IState) => {
@@ -23,11 +23,11 @@ export default Relax(['count'], (props: TProps) => {
         Inc
       </a>
 
-      {count}
+      {relax.count}
 
       <a href={'javascript:void(0);'} onClick={dec}>
         Dec
       </a>
     </div>
   );
-});
+}
