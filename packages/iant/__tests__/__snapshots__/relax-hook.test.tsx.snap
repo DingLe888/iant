@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test relax hook 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    react hooks
+  </div>
+</div>
+`;
