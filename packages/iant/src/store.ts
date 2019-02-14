@@ -84,6 +84,7 @@ export class Store<T = {}> {
       this._state = state as T;
       this._computeQL();
       batchedUpdates(() => {
+        console.log(this._subscribe.length + 'len');
         for (let subscribe of this._subscribe) {
           subscribe(this._state);
         }
@@ -121,7 +122,7 @@ export class Store<T = {}> {
     }
   }
 
-  subscribe(callback: TSubscriber) {
+  subscribe = (callback: TSubscriber) => {
     let index = this._subscribe.indexOf(callback);
 
     if (index === -1) {
@@ -132,7 +133,7 @@ export class Store<T = {}> {
     return () => {
       this._subscribe.splice(index, 1);
     };
-  }
+  };
 }
 
 export const createStore = <T>(props: IStoreProps<T>) => () =>

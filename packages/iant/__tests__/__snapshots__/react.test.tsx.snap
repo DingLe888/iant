@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test change state 1`] = `
-<div>
-  1
-</div>
-`;
-
-exports[`test change state 2`] = `
-<div>
-  2
-</div>
-`;
-
 exports[`test defaultInject setState and dispatch 1`] = `
 <div>
   yes
