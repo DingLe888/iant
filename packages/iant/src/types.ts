@@ -21,6 +21,7 @@ export type TActionRetFn = () => { msg: string; handler: TActionHandler };
 export type TAction = (msg: string, handler: TActionHandler) => TActionRetFn;
 
 export interface IStoreProps<T = {}> {
+  debug?: boolean;
   state?: T;
   ql?: { [name: string]: QueryLang };
   action?: { [name: string]: TActionRetFn };
