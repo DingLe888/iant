@@ -1,0 +1,105 @@
+import isEqual from 'fast-deep-equal';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { StoreContext } from './context';
+import { Store } from './store';
+import { IRelaxProps, TRelaxPath } from './types';
+import { isArray, isObj, isStr } from './util';
+
+/**
+ * 归集属性
+ * @param relaxProps
+ */
+function reduceRelaxPropsMapper(relaxProps: TRelaxPath) {
+  const relaxPathMapper = {};
+
+  for (let prop of relaxProps) {
+    //如果当前的属性是数组
+    //默认去最后一个字段的名称作为key
+    //如果最后一位是数字，建议使用对象的方式
+    if (isArray(prop)) {
+      const len = prop.length;
+      const last = prop[len - 1];
+      relaxPathMapper[last] = prop;
+    }
+    //如果是字符串就直接以字符串作为key
+    //如果是list.0.id这样的字符串就
+    //先分割，然后走array一样的流程
+    else if (isStr(prop)) {
+      if (prop.indexOf('.') != -1) {
+        const arr = prop.split('.');
+        const len = arr.length;
+        const last = arr[len - 1];
+        relaxPathMapper[last] = arr;
+      } else {
+        relaxPathMapper[prop] = prop;
+      }
+    }
+    //如果是对象
+    else if (isObj(prop)) {
+      Object.keys(prop).forEach(key => {
+        let val = prop[key];
+        if (isStr(val) && val.indexOf('.') != -1) {
+          val = val.split('.');
+        }
+        relaxPathMapper[key] = val;
+      });
+    }
+  }
+
+  return relaxPathMapper;
+}
+
+/**
+ * 计算relax路径对应的值
+ * @param store
+ * @param mapper
+ */
+function computeRelaxProps(
+  store: Store,
+  mapper: { [name: string]: Array<string | number> | string }
+) {
+  const relaxData = {
+    dispatch: store.dispatch,
+    setState: store.setState
+  } as IRelaxProps;
+
+  for (let prop in mapper) {
+    if (mapper.hasOwnProperty(prop)) {
+      const val = mapper[prop];
+      relaxData[prop] = store.bigQuery(val);
+    }
+  }
+
+  return relaxData;
+}
+
+export default function useRelax<T = {}>(props: TRelaxPath = []) {
+  console.log('call relax');
+  const store: Store = useContext(StoreContext);
+  const relaxPropsMapper = reduceRelaxPropsMapper(props);
+  const relaxData = computeRelaxProps(store, relaxPropsMapper);
+  const { dispatch, setState, ...rest } = relaxData;
+
+  const [relax, updateState] = useState(rest || {});
+
+  //get last relax state
+  const preRelax = useRef(null);
+  useEffect(() => {
+    preRelax.current = relax;
+  });
+
+  useEffect(() => {
+    return store.subscribe(() => {
+      const newState = computeRelaxProps(store, relaxPropsMapper);
+      if (!isEqual(newState, preRelax.current)) {
+        updateState(newState);
+      }
+    });
+  });
+
+  return {
+    ...relax,
+    dispatch,
+    setState
+  } as T & { dispatch: typeof dispatch; setState: typeof setState };
+}

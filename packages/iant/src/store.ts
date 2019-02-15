@@ -25,7 +25,8 @@ const batchedUpdates =
 
 export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
-    const { state = {}, ql = {}, action = {} } = props;
+    const { debug, state = {}, ql = {}, action = {} } = props;
+    this.debug = debug;
     this._ql = ql;
     this._state = state as T;
     this._action = this._reduceAction(action);
@@ -41,6 +42,7 @@ export class Store<T = {}> {
   private _ql: { [name: string]: QueryLang };
   private _cache: { [key: number]: Array<any> };
   private _action: { [name: string]: TActionHandler };
+  public readonly debug: boolean;
 
   private _computeQL() {
     const rx = Object.keys(this._ql).reduce((r, k) => {
@@ -121,7 +123,7 @@ export class Store<T = {}> {
     }
   }
 
-  subscribe(callback: TSubscriber) {
+  subscribe = (callback: TSubscriber) => {
     let index = this._subscribe.indexOf(callback);
 
     if (index === -1) {
@@ -132,7 +134,7 @@ export class Store<T = {}> {
     return () => {
       this._subscribe.splice(index, 1);
     };
-  }
+  };
 }
 
 export const createStore = <T>(props: IStoreProps<T>) => () =>

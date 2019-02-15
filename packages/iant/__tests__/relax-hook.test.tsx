@@ -1,6 +1,6 @@
-import { useRelax, createStore, Provider } from '../src';
-import renderer from 'react-test-renderer';
 import React, { useEffect } from 'react';
+import renderer from 'react-test-renderer';
+import { createStore, Provider, useRelax } from '../src';
 
 const store = createStore({
   state: {
@@ -11,7 +11,7 @@ const store = createStore({
 
 function Relax() {
   //@ts-ignore
-  const [relax, { setState }] = useRelax<{ count: number; text: string }>([
+  const { count, text, setState } = useRelax<{ count: number; text: string }>([
     'count',
     'todo.0.text'
   ]);
@@ -26,8 +26,8 @@ function Relax() {
 
   return (
     <div>
-      <div>{relax.count}</div>
-      <div>{relax.text}</div>
+      <div>{count}</div>
+      <div>{text}</div>
     </div>
   );
 }

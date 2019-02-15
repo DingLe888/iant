@@ -1,14 +1,13 @@
 import React from 'react';
 import render from 'react-test-renderer';
-import { createStore, Provider, Relax, TRenderProps, _ } from '../src';
+import { createStore, Provider, useRelax } from '../src';
+import * as _ from '../src/util';
 
-type TRelaxProps = TRenderProps<{
-  relaxProps: {
-    id: number;
-    lname: string;
-    name: string;
-  };
-}>;
+type TRelaxProps = {
+  id: number;
+  lname: string;
+  name: string;
+};
 
 const store = createStore({
   state: {
@@ -17,20 +16,23 @@ const store = createStore({
   }
 });
 
-const TestRelax = Relax(
-  [['list', 0, 'id'], { lname: 'list.0.name' }, 'name'],
-  (props: TRelaxProps) => {
-    return (
-      <div>
-        {props.relaxProps.id}
-        {props.relaxProps.name}
-        {props.relaxProps.lname}
-        {_.isFn(props.relaxProps.dispatch) && 'yes'}
-        {_.isFn(props.relaxProps.setState) && 'yes'}
-      </div>
-    );
-  }
-);
+function TestRelax() {
+  const { id, lname, name, setState, dispatch } = useRelax<TRelaxProps>([
+    ['list', 0, 'id'],
+    { lname: 'list.0.name' },
+    'name'
+  ]);
+
+  return (
+    <div>
+      {id}
+      {name}
+      {lname}
+      {_.isFn(dispatch) && 'yes'}
+      {_.isFn(setState) && 'yes'}
+    </div>
+  );
+}
 
 const TestApp = () => (
   <Provider store={store}>
@@ -44,7 +46,11 @@ it('test init', () => {
 });
 
 it('test no subscribe', () => {
-  const RelaxApp = Relax([], () => <div />);
+  const RelaxApp = () => {
+    useRelax([]);
+    return <div />;
+  };
+
   const TestApp = () => (
     <Provider store={store}>
       <RelaxApp />
@@ -55,36 +61,11 @@ it('test no subscribe', () => {
   expect(tree).toMatchSnapshot();
 });
 
-it('test change state', () => {
-  const RelaxApp = Relax(['list.0.id'], ({ relaxProps }: TRelaxProps) => (
-    <div>{relaxProps.id}</div>
-  ));
-
-  let _ref = null as any;
-  const TestApp = () => (
-    <Provider
-      store={store}
-      ref={ref => {
-        _ref = ref;
-      }}
-    >
-      <RelaxApp />
-    </Provider>
-  );
-
-  const tree = render.create(<TestApp />);
-  expect(tree.toJSON()).toMatchSnapshot();
-  _ref._store.setState(state => {
-    state.list[0].id = 2;
-  });
-
-  expect(tree.toJSON()).toMatchSnapshot();
-});
-
 it('test defaultInject setState and dispatch', () => {
-  const RelaxApp = Relax([], (props: TRelaxProps) => {
-    return <div>{_.isFn(props.relaxProps.setState) && 'yes'}</div>;
-  });
+  const RelaxApp = () => {
+    const { setState } = useRelax([]);
+    return <div>{_.isFn(setState) && 'yes'}</div>;
+  };
 
   const TestApp = () => (
     <Provider store={store}>

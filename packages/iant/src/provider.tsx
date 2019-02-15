@@ -3,33 +3,34 @@ import { StoreContext } from './context';
 import { Store } from './store';
 import { IProviderProps } from './types';
 
-export default class Provider extends React.Component<IProviderProps> {
-  constructor(props: IProviderProps) {
+const noop = () => {};
+
+export default class Provider<T = {}> extends React.Component<
+  IProviderProps<T>
+> {
+  static defaultProps = {
+    onWillMount: noop,
+    onMounted: noop,
+    onWillUnmount: noop
+  };
+
+  private _store: Store<T>;
+
+  constructor(props: IProviderProps<T>) {
     super(props);
     this._store = this.props.store();
-    //listener
-    this._unsubscriber = this._store.subscribe(state => {
-      this.setState(() => state);
-    });
   }
 
-  private _store: Store;
-  private _unsubscriber: Function;
-
   componentWillMount() {
-    this.props.onWillMount && this.props.onWillMount(this._store);
+    this.props.onWillMount(this._store);
   }
 
   componentDidMount() {
-    this.props.onMounted && this.props.onMounted(this._store);
+    this.props.onMounted(this._store);
   }
 
   componentDidUpdate() {
-    this.props.onUpdated && this.props.onUpdated(this._store);
-  }
-
-  componentWillUnmount() {
-    this._unsubscriber();
+    this.props.onMounted(this._store);
   }
 
   render() {

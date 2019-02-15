@@ -35,11 +35,17 @@ csstype@^2.2.0:
   resolved "http://registry.npm.taobao.org/csstype/download/csstype-2.6.1.tgz#4cfbf637a577497036ebcd7e32647ef19a0b8076"
   integrity sha1-TPv2N6V3SXA2681+MmR+8ZoLgHY=
 
-iant@^0.0.1-alpha2:
-  version "0.0.1-alpha2"
-  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha2.tgz#fd76fc80bf17f2288bf5c6047260a1e83ac3a52a"
-  integrity sha1-/Xb8gL8X8iiL9cYEcmCh6DrDpSo=
+fast-deep-equal@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
+  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
+
+iant@^0.0.1-alpha4:
+  version "0.0.1-alpha4"
+  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha4.tgz#01faeb9b61722b9a95229a2a2c86b3b9922c2d1c"
+  integrity sha1-Afrrm2FyK5qVIpoqLIazuZIsLRw=
   dependencies:
+    fast-deep-equal "^2.0.1"
     immer "^1.10.4"
 
 immer@^1.10.4:

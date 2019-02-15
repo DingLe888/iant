@@ -1,10 +1,11 @@
 {
   "name": "iant",
-  "version": "0.0.1-alpha2",
+  "version": "0.0.1-alpha4",
   "description": "",
   "main": "./lib/index.js",
   "types": "./lib/typings/index.d.ts",
   "dependencies": {
+    "fast-deep-equal": "^2.0.1",
     "immer": "^1.10.4"
   },
   "keywords": [],

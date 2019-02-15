@@ -6,7 +6,7 @@ import { ITodo } from '../store';
 type TRelax = { todoQL: Array<ITodo> };
 
 export default function MainSection() {
-  const [{ todoQL }, { dispatch }] = useRelax<TRelax>(['todoQL']);
+  const { todoQL, dispatch } = useRelax<TRelax>(['todoQL']);
 
   return (
     <section className="main">

@@ -5,7 +5,7 @@ import { IState } from '../store';
 type TRelax = { count: IState['count'] };
 
 export default function Counter() {
-  const [relax, { setState }] = useRelax<TRelax>(['count']);
+  const { setState, count } = useRelax<TRelax>(['count']);
 
   const inc = () =>
     setState((data: IState) => {
@@ -23,7 +23,7 @@ export default function Counter() {
         Inc
       </a>
 
-      {relax.count}
+      {count}
 
       <a href={'javascript:void(0);'} onClick={dec}>
         Dec
