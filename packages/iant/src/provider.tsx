@@ -25,6 +25,10 @@ export default class Provider<T = {}> extends React.Component<
     this.props.onWillMount(this._store);
   }
 
+  componentDidMount() {
+    this.props.onMounted(this._store);
+  }
+
   componentDidUpdate() {
     this.props.onMounted(this._store);
   }
