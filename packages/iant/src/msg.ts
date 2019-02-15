@@ -1,12 +1,20 @@
 import mitt from 'mitt';
 import { useEffect } from 'react';
 
-const msg: mitt.Emitter = new mitt();
+export type TMsgListeners = Array<{ name: string; handler: mitt.Handler }>;
 
-export default function useMsg(name: string, handler: mitt.Handler) {
+export const msg: mitt.Emitter = new mitt();
+
+export function useMsg(listners: TMsgListeners = []) {
   useEffect(() => {
-    msg.on(name, handler);
-    return msg.off(name, handler);
+    for (let { name, handler } of listners) {
+      msg.on(name, handler);
+    }
+    return () => {
+      for (let { name, handler } of listners) {
+        msg.off(name, handler);
+      }
+    };
   });
 
   return msg;
