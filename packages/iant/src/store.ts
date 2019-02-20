@@ -25,12 +25,12 @@ const batchedUpdates =
 
 export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
-    const { state = {}, ql = {}, action = {} } = props;
+    const { debug, state = {}, ql = {}, action = {} } = props;
     this._ql = ql;
     this._state = state as T;
     this._action = this._reduceAction(action);
 
-    this.debug = false;
+    this.debug = debug;
     this._cache = {};
     this._subscribe = [];
 

@@ -20,6 +20,7 @@
     "ts-jest": "^23.10.5",
     "lerna": "^3.11.1",
     "react": "^16.8.1",
-    "react-dom": "^16.8.1"
+    "react-dom": "^16.8.1",
+    "mock-jest-console": "^1.1.1"
   }
 }
