@@ -84,7 +84,7 @@ export default function useRelax<T = {}>(
   const [relax, updateState] = useState(rest || {});
 
   if (process.env.NODE_ENV !== 'production') {
-    if (store.debug && !name) {
+    if (store.debug && name) {
       console.log(`Relax(${name}):`, relax);
     }
   }
@@ -100,7 +100,7 @@ export default function useRelax<T = {}>(
       const newState = computeRelaxProps(store, relaxPropsMapper);
       if (!isEqual(newState, preRelax.current)) {
         if (process.env.NODE_ENV !== 'production') {
-          if (store.debug && !name) {
+          if (store.debug && name) {
             console.log(`Relax(${name}):`, newState);
           }
         }

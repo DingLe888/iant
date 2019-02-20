@@ -5,7 +5,7 @@ import { IState } from '../store';
 type TRelax = { count: IState['count'] };
 
 export default function Counter() {
-  const { setState, count } = useRelax<TRelax>(['count']);
+  const { setState, count } = useRelax<TRelax>(['count'], 'Counter');
 
   const inc = () =>
     setState((data: IState) => {

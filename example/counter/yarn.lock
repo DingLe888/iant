@@ -40,13 +40,14 @@ fast-deep-equal@^2.0.1:
   resolved "http://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-iant@^0.0.1-alpha4:
-  version "0.0.1-alpha4"
-  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha4.tgz#01faeb9b61722b9a95229a2a2c86b3b9922c2d1c"
-  integrity sha1-Afrrm2FyK5qVIpoqLIazuZIsLRw=
+iant@^0.0.1-alpha5:
+  version "0.0.1-alpha5"
+  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha5.tgz#53d933504b68707f0581b9e326463f5349746927"
+  integrity sha1-U9kzUEtocH8FgbnjJkY/U0l0aSc=
   dependencies:
     fast-deep-equal "^2.0.1"
     immer "^1.10.4"
+    mitt "^1.1.3"
 
 immer@^1.10.4:
   version "1.12.1"
@@ -64,6 +65,11 @@ loose-envify@^1.1.0, loose-envify@^1.3.1:
   integrity sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
+
+mitt@^1.1.3:
+  version "1.1.3"
+  resolved "http://registry.npm.taobao.org/mitt/download/mitt-1.1.3.tgz#528c506238a05dce11cd914a741ea2cc332da9b8"
+  integrity sha1-UoxQYjigXc4RzZFKdB6izDMtqbg=
 
 object-assign@^4.1.1:
   version "4.1.1"

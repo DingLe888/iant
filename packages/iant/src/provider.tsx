@@ -22,8 +22,11 @@ export default class Provider<T = {}> extends React.Component<
 
     //dev
     if (process.env.NODE_ENV !== 'production') {
-      if (this._store.debug) {
-        (global || window)[props.id || 'provider'] = this._store;
+      if (this._store.debug && props.id) {
+        const { version } = require('../package.json');
+        console.log(`iant@${version}`);
+        console.log(`Provider(${props.id}) enabled debug mode `);
+        (global || window)[props.id] = this._store;
       }
     }
   }

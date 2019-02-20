@@ -15,10 +15,10 @@ const _getCountText = (count: number) => {
 };
 
 export default function Footer() {
-  const { filterStatus, countQL, dispatch } = useRelax<TRelax>([
-    'count',
-    'filterStatus'
-  ]);
+  const { filterStatus, countQL, dispatch } = useRelax<TRelax>(
+    ['count', 'filterStatus'],
+    'Footer'
+  );
 
   return (
     <footer className="footer">

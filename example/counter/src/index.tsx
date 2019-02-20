@@ -5,7 +5,7 @@ import Counter from './component/counter';
 import store from './store';
 
 const ExampleApp = () => (
-  <Provider store={store}>
+  <Provider store={store} id={'ExampleApp'}>
     <Counter />
   </Provider>
 );

@@ -25,12 +25,12 @@ const batchedUpdates =
 
 export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
-    const { debug, state = {}, ql = {}, action = {} } = props;
-    this.debug = debug;
+    const { state = {}, ql = {}, action = {} } = props;
     this._ql = ql;
     this._state = state as T;
     this._action = this._reduceAction(action);
 
+    this.debug = false;
     this._cache = {};
     this._subscribe = [];
 
@@ -125,12 +125,29 @@ export class Store<T = {}> {
       this._cache[id] || (this._cache[id] = []);
       const len = deps.length;
 
+      //debug log
+      if (process.env.NODE_ENV !== 'production') {
+        if (this.debug && name) {
+          console.groupCollapsed(`BigQuery(${name}):|>`);
+        }
+      }
+
       //计算pathVal
       deps.forEach((dep, i) => {
         const val = this.bigQuery(dep);
         if (val !== this._cache[id][i]) {
           isChanged = true;
         }
+
+        //debug log
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && name) {
+            const name =
+              dep instanceof QueryLang ? `QL(${dep.meta.name})` : dep;
+            console.log(`dep -> ${name}, val -> ${val}`);
+          }
+        }
+
         this._cache[id][i] = val;
       });
 
@@ -139,25 +156,26 @@ export class Store<T = {}> {
         const result = handler(...depVal);
         this._cache[id][len] = result;
 
+        //debug log
         if (process.env.NODE_ENV !== 'production') {
           if (this.debug && !name) {
-            console.groupCollapsed(
-              `BigQuery(${name}): isChanged->${isChanged}, val->${result}`
-            );
+            console.log(`result: isChanged->${isChanged}, val->${result}`);
+            console.groupEnd();
           }
         }
 
         return result;
       } else {
+        //debug log
         if (process.env.NODE_ENV !== 'production') {
           if (this.debug && !name) {
-            console.groupCollapsed(
-              `BigQuery(${name}): isChanged->${false}, val->${
-                this._cache[id][len]
-              }`
+            console.log(
+              `result: isChanged->${false}, val->${this._cache[id][len]}`
             );
+            console.groupEnd();
           }
         }
+
         return this._cache[id][len];
       }
     }
