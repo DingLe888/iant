@@ -69,10 +69,32 @@ export class Store<T = {}> {
   }
 
   dispatch = (action: string, params?: Object) => {
+    //debug log
+    if (process.env.NODE_ENV !== 'production') {
+      if (this.debug) {
+        console.groupCollapsed(`dispath:-> ${action}`);
+        console.log(`params: ${JSON.stringify(params, null, 2)}`);
+      }
+    }
+
     const handler = this._action[action];
     if (!handler) {
+      //debug
+      if (process.env.NODE_ENV !== 'production') {
+        if (this.debug) {
+          console.log(`Oops, Could not find any handler`);
+        }
+      }
       return;
     }
+
+    //debug
+    if (process.env.NODE_ENV !== 'production') {
+      if (this.debug) {
+        console.groupEnd();
+      }
+    }
+
     handler(this, params);
   };
 
@@ -98,7 +120,7 @@ export class Store<T = {}> {
       return getPathVal(this._state, query);
     } else if (query instanceof QueryLang) {
       let isChanged = false;
-      const { id, deps, handler } = query.meta();
+      const { id, deps, name, handler } = query.meta();
       //init cache
       this._cache[id] || (this._cache[id] = []);
       const len = deps.length;
@@ -116,8 +138,26 @@ export class Store<T = {}> {
         const depVal = this._cache[id].slice(0, len);
         const result = handler(...depVal);
         this._cache[id][len] = result;
+
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && !name) {
+            console.groupCollapsed(
+              `BigQuery(${name}): isChanged->${isChanged}, val->${result}`
+            );
+          }
+        }
+
         return result;
       } else {
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && !name) {
+            console.groupCollapsed(
+              `BigQuery(${name}): isChanged->${false}, val->${
+                this._cache[id][len]
+              }`
+            );
+          }
+        }
         return this._cache[id][len];
       }
     }
@@ -135,6 +175,13 @@ export class Store<T = {}> {
       this._subscribe.splice(index, 1);
     };
   };
+
+  //=====================debug===========================
+  pprint() {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(JSON.stringify(this._state, null, 2));
+    }
+  }
 }
 
 export const createStore = <T>(props: IStoreProps<T>) => () =>

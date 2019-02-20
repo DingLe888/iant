@@ -73,14 +73,21 @@ function computeRelaxProps(
   return relaxData;
 }
 
-export default function useRelax<T = {}>(props: TRelaxPath = []) {
-  console.log('call relax');
+export default function useRelax<T = {}>(
+  props: TRelaxPath = [],
+  name: string = ''
+) {
   const store: Store = useContext(StoreContext);
   const relaxPropsMapper = reduceRelaxPropsMapper(props);
   const relaxData = computeRelaxProps(store, relaxPropsMapper);
   const { dispatch, setState, ...rest } = relaxData;
-
   const [relax, updateState] = useState(rest || {});
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (store.debug && !name) {
+      console.log(`Relax(${name}):`, relax);
+    }
+  }
 
   //get last relax state
   const preRelax = useRef(null);
@@ -92,6 +99,11 @@ export default function useRelax<T = {}>(props: TRelaxPath = []) {
     return store.subscribe(() => {
       const newState = computeRelaxProps(store, relaxPropsMapper);
       if (!isEqual(newState, preRelax.current)) {
+        if (process.env.NODE_ENV !== 'production') {
+          if (store.debug && !name) {
+            console.log(`Relax(${name}):`, newState);
+          }
+        }
         updateState(newState);
       }
     });

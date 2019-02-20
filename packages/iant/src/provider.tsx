@@ -19,6 +19,13 @@ export default class Provider<T = {}> extends React.Component<
   constructor(props: IProviderProps<T>) {
     super(props);
     this._store = this.props.store();
+
+    //dev
+    if (process.env.NODE_ENV !== 'production') {
+      if (this._store.debug) {
+        (global || window)[props.id || 'provider'] = this._store;
+      }
+    }
   }
 
   componentWillMount() {

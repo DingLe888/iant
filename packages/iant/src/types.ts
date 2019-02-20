@@ -35,6 +35,7 @@ export interface IProviderProps<T> {
   onMounted?: (store: Store) => void;
   onWillMount?: (store: Store) => void;
   onWillUnmount?: () => void;
+  id?: string;
 }
 
 export interface IRelaxProps {
