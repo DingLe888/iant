@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test 1`] = `
+Array [
+  "EL(mottEl): debug mode",
+  "deps-> count",
+  "val: changed(Y)",
+  "deps-> mott",
+  "val: changed(N)",
+  "deps val was changed. trigger once",
+  "build tools for human.2",
+]
+`;

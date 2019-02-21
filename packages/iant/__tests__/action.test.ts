@@ -1,4 +1,5 @@
 import { action, Store } from '../src';
+
 const handler = (store: Store) => {
   store.setState(data => {
     data['id'] = 1;

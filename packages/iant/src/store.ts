@@ -1,5 +1,6 @@
 import produce from 'immer';
 import ReactDOM from 'react-dom';
+import { EffectLang } from './el';
 import { QueryLang } from './ql';
 import {
   IStoreProps,
@@ -23,18 +24,12 @@ const batchedUpdates =
     cb();
   };
 
+/**
+ * state container
+ */
 export class Store<T = any> {
   constructor(props: IStoreProps<T>) {
-    const { debug, state = {}, ql = {}, action = {} } = props;
-    this._ql = ql;
-    this.debug = debug;
-
-    this._state = state as T;
-    this._action = this._reduceAction(action);
-
-    this._cache = {};
-    this._subscribe = [];
-
+    //debug log
     if (process.env.NODE_ENV != 'production') {
       if (this.debug) {
         const { version } = require('../package.json');
@@ -42,15 +37,28 @@ export class Store<T = any> {
       }
     }
 
+    const { debug, state = {}, ql = {}, el = {}, action = {} } = props;
+
+    this.debug = debug;
+    this._state = state as T;
+
+    this._ql = ql;
+    this._el = this._transformEl(el);
+    this._action = this._reduceAction(action);
+
+    this._cache = {};
+    this._subscribe = [];
+
     this._computeQL();
   }
 
+  public readonly debug: boolean;
   private _state: T;
   private _subscribe: Array<TSubscriber>;
   private _ql: { [name: string]: QueryLang };
+  private _el: Array<Function>;
   private _cache: { [key: number]: Array<any> };
   private _action: { [name: string]: TActionHandler };
-  public readonly debug: boolean;
 
   private _computeQL() {
     const rx = Object.keys(this._ql).reduce((r, k) => {
@@ -64,6 +72,82 @@ export class Store<T = any> {
       ...rx
     };
   }
+
+  private _parseEL = (el: EffectLang) => {
+    const cache = [];
+    const { name, handler, deps } = el.meta();
+
+    for (let dep of deps) {
+      cache.push(this.bigQuery(dep));
+    }
+
+    return () => {
+      let isChanged = false;
+      if (process.env.NODE_ENV !== 'production') {
+        if (this.debug && name) {
+          console.groupCollapsed(`EL(${name}): debug mode`);
+        }
+      }
+
+      deps.forEach((dep, i) => {
+        //debug log
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && name) {
+            console.log(`deps-> ${dep instanceof QueryLang ? 'QL' : dep}`);
+          }
+        }
+
+        const val = this.bigQuery(dep);
+        if (val !== cache[i]) {
+          //debug log
+          if (process.env.NODE_ENV !== 'production') {
+            if (this.debug && name) {
+              console.log('val: changed(Y)');
+            }
+          }
+          isChanged = true;
+          cache[i] = val;
+        } else {
+          //debug log
+          if (process.env.NODE_ENV !== 'production') {
+            if (this.debug && name) {
+              console.log('val: changed(N)');
+            }
+          }
+        }
+      });
+
+      if (isChanged) {
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && name) {
+            console.log('deps val was changed. trigger once');
+            console.groupEnd();
+          }
+        }
+        handler(...cache);
+      } else {
+        if (process.env.NODE_ENV !== 'production') {
+          if (this.debug && name) {
+            console.log('deps val was not changed.');
+            console.groupEnd();
+          }
+        }
+      }
+    };
+  };
+
+  private _transformEl = (el: { [key: string]: EffectLang }) => {
+    return Object.keys(el).map(k => {
+      const val = el[k];
+      return this._parseEL(val);
+    });
+  };
+
+  private _computeEL = () => {
+    for (let handle of this._el) {
+      handle();
+    }
+  };
 
   private _reduceAction(actions: {
     [name: string]: TActionRetFn;
@@ -118,6 +202,9 @@ export class Store<T = any> {
     if (state !== this._state) {
       this._state = state as T;
       this._computeQL();
+      this._computeEL();
+
+      //update ui
       batchedUpdates(() => {
         for (let subscribe of this._subscribe) {
           subscribe(this._state);
@@ -126,7 +213,7 @@ export class Store<T = any> {
     }
   };
 
-  bigQuery(query: TPath | QueryLang) {
+  bigQuery = (query: TPath | QueryLang) => {
     if (isStr(query) || isArray(query)) {
       return getPathVal(this._state, query);
     } else if (query instanceof QueryLang) {
@@ -191,7 +278,7 @@ export class Store<T = any> {
         return this._cache[id][len];
       }
     }
-  }
+  };
 
   subscribe = (callback: TSubscriber) => {
     let index = this._subscribe.indexOf(callback);
