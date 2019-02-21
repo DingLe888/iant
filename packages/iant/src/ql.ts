@@ -28,4 +28,5 @@ export class QueryLang {
   }
 }
 
-export const QL = (name: string, lang: TQLang) => new QueryLang({ name, lang });
+export const QL = (lang: TQLang, name: string = '') =>
+  new QueryLang({ name, lang });

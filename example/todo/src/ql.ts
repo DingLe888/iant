@@ -1,7 +1,7 @@
 import { QL } from 'iant';
 import { ITodo } from './store';
 
-export const todoQL = QL('todo', [
+export const todoQL = QL([
   'todo',
   'filterStatus',
   (todo: Array<ITodo>, filterStatus: string) => {
@@ -15,7 +15,7 @@ export const todoQL = QL('todo', [
   }
 ]);
 
-export const countQL = QL('count', [
+export const countQL = QL([
   todoQL,
   /**
    * QL支持嵌套

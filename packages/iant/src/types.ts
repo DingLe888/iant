@@ -33,8 +33,11 @@ export interface IProviderProps<T> {
   children?: JSX.Element;
   store: () => Store<T>;
   onMounted?: (store: Store) => void;
-  onWillMount?: (store: Store) => void;
-  onWillUnmount?: () => void;
+  onWillUnmount?: (store: Store) => void;
+  /**
+   * 当前应用标记，主要用于调试
+   */
+  id?: string;
 }
 
 export interface IRelaxProps {

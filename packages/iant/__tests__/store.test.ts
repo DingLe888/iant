@@ -10,7 +10,7 @@ it('test store ', () => {
     list: [{ id: 1, name: 'test' }],
     hello: 'hello bee'
   };
-  const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
+  const helloQL = QL(['hello', hello => hello + '!!'], 'helloQL');
 
   const store = createStore({
     state: initState,
@@ -56,7 +56,7 @@ it('test action', () => {
     list: [{ id: 1, name: 'test' }],
     hello: 'hello bee'
   };
-  const helloQL = QL('helloQL', ['hello', hello => hello + '!!']);
+  const helloQL = QL(['hello', hello => hello + '!!'], 'helloQL');
   const effect = action('hello', (store: Store<IState>) => {
     store.setState(data => {
       data.list[0].id = 2;

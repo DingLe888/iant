@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test debug log 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`test debug log 2`] = `
+Array [
+  "iant@0.0.1-alpha8",
+  "Provider(DebugApp) enabled debug mode ",
+  "Relax(HelloRelax):",
+]
+`;
