@@ -39,8 +39,3 @@ export interface IProviderProps<T> {
    */
   id?: string;
 }
-
-export interface IRelaxProps {
-  setState: (cb: (data: any) => void) => void;
-  dispatch: (action: string, params?: any) => void;
-}

@@ -23,7 +23,7 @@ const batchedUpdates =
     cb();
   };
 
-export class Store<T = {}> {
+export class Store<T = any> {
   constructor(props: IStoreProps<T>) {
     const { debug, state = {}, ql = {}, action = {} } = props;
     this._ql = ql;

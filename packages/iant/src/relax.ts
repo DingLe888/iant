@@ -2,8 +2,47 @@ import isEqual from 'fast-deep-equal';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { StoreContext } from './context';
 import { Store } from './store';
-import { IRelaxProps, TRelaxPath } from './types';
+import { TRelaxPath } from './types';
 import { isArray, isObj, isStr } from './util';
+
+export default function useRelax<T = {}>(
+  props: TRelaxPath = [],
+  name: string = ''
+) {
+  const store: Store = useContext(StoreContext);
+  const relaxPropsMapper = reduceRelaxPropsMapper(props);
+  const relaxData = computeRelaxProps<T>(store, relaxPropsMapper);
+  const [relax, updateState] = useState(relaxData);
+
+  //get last relax state
+  const preRelax = useRef(null);
+  useEffect(() => {
+    preRelax.current = relax;
+  });
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (store.debug && name && !preRelax.current) {
+      console.log(`Relax(${name}):`, relax);
+    }
+  }
+
+  //only componentDidMount && componentWillUnmount
+  useEffect(() => {
+    return store.subscribe(() => {
+      const newState = computeRelaxProps<T>(store, relaxPropsMapper);
+      if (!isEqual(newState, preRelax.current)) {
+        if (process.env.NODE_ENV !== 'production') {
+          if (store.debug && name) {
+            console.log(`Relax(${name})-update:`, newState);
+          }
+        }
+        updateState(newState);
+      }
+    });
+  }, []);
+
+  return relax;
+}
 
 /**
  * 归集属性
@@ -54,14 +93,14 @@ function reduceRelaxPropsMapper(relaxProps: TRelaxPath) {
  * @param store
  * @param mapper
  */
-function computeRelaxProps(
+function computeRelaxProps<T>(
   store: Store,
   mapper: { [name: string]: Array<string | number> | string }
 ) {
   const relaxData = {
     dispatch: store.dispatch,
     setState: store.setState
-  } as IRelaxProps;
+  };
 
   for (let prop in mapper) {
     if (mapper.hasOwnProperty(prop)) {
@@ -70,46 +109,7 @@ function computeRelaxProps(
     }
   }
 
-  return relaxData;
-}
-
-export default function useRelax<T = {}>(
-  props: TRelaxPath = [],
-  name: string = ''
-) {
-  const store: Store = useContext(StoreContext);
-  const relaxPropsMapper = reduceRelaxPropsMapper(props);
-  const relaxData = computeRelaxProps(store, relaxPropsMapper);
-  const [relax, updateState] = useState(relaxData);
-
-  //get last relax state
-  const preRelax = useRef(null);
-  useEffect(() => {
-    preRelax.current = relax;
-  });
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (store.debug && name && !preRelax.current) {
-      console.log(`Relax(${name}):`, relax);
-    }
-  }
-
-  //only componentDidMount && componentWillUnmount
-  useEffect(() => {
-    return store.subscribe(() => {
-      const newState = computeRelaxProps(store, relaxPropsMapper);
-      if (!isEqual(newState, preRelax.current)) {
-        if (process.env.NODE_ENV !== 'production') {
-          if (store.debug && name) {
-            console.log(`Relax(${name})-update:`, newState);
-          }
-        }
-        updateState(newState);
-      }
-    });
-  }, []);
-
-  return relax as T & {
+  return relaxData as T & {
     dispatch: typeof store.dispatch;
     setState: typeof store.setState;
   };
