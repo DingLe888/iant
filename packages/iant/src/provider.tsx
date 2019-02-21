@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { StoreContext } from './context';
 import { IProviderProps } from './types';
 
-const noop = () => {};
-
 export default function Provider<T = {}>(props: IProviderProps<T>) {
   const store = props.store();
 
@@ -17,6 +15,8 @@ export default function Provider<T = {}>(props: IProviderProps<T>) {
     }
   }
 
+  //componentDidMount
+  //componentWillUnmount
   useEffect(() => {
     props.onMounted(store);
     return () => props.onWillUnmount(store);
@@ -30,6 +30,7 @@ export default function Provider<T = {}>(props: IProviderProps<T>) {
   );
 }
 
+const noop = () => {};
 Provider.defaultProps = {
   onMounted: noop,
   onWillUnmount: noop
