@@ -15,7 +15,6 @@ export interface IState {
 }
 
 export default createStore<IState>({
-  debug: true,
   ql,
   action,
   state: {

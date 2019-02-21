@@ -27,12 +27,20 @@ export class Store<T = {}> {
   constructor(props: IStoreProps<T>) {
     const { debug, state = {}, ql = {}, action = {} } = props;
     this._ql = ql;
+    this.debug = debug;
+
     this._state = state as T;
     this._action = this._reduceAction(action);
 
-    this.debug = debug;
     this._cache = {};
     this._subscribe = [];
+
+    if (process.env.NODE_ENV != 'production') {
+      if (this.debug) {
+        const { version } = require('../package.json');
+        console.log(`iant@${version}`);
+      }
+    }
 
     this._computeQL();
   }
@@ -73,7 +81,7 @@ export class Store<T = {}> {
     if (process.env.NODE_ENV !== 'production') {
       if (this.debug) {
         console.groupCollapsed(`dispath:-> ${action}`);
-        console.log(`params: ${JSON.stringify(params, null, 2)}`);
+        console.log('params->', params);
       }
     }
 
@@ -82,7 +90,9 @@ export class Store<T = {}> {
       //debug
       if (process.env.NODE_ENV !== 'production') {
         if (this.debug) {
-          console.log(`Oops, Could not find any handler`);
+          console.warn(
+            `Oops, Could not find any handler. Please check you action`
+          );
         }
       }
       return;
@@ -91,6 +101,7 @@ export class Store<T = {}> {
     //debug
     if (process.env.NODE_ENV !== 'production') {
       if (this.debug) {
+        console.log(`Action(${action}) received`);
         console.groupEnd();
       }
     }
@@ -104,7 +115,7 @@ export class Store<T = {}> {
 
   setState = (callback: (data: T) => void) => {
     const state = produce(this._state, callback as any);
-    if (state != this._state) {
+    if (state !== this._state) {
       this._state = state as T;
       this._computeQL();
       batchedUpdates(() => {
@@ -144,7 +155,8 @@ export class Store<T = {}> {
           if (this.debug && name) {
             const name =
               dep instanceof QueryLang ? `QL(${dep.meta.name})` : dep;
-            console.log(`dep -> ${name}, val -> ${val}`);
+            console.log('dep ->', name);
+            console.log('val ->', val);
           }
         }
 
@@ -158,8 +170,9 @@ export class Store<T = {}> {
 
         //debug log
         if (process.env.NODE_ENV !== 'production') {
-          if (this.debug && !name) {
-            console.log(`result: isChanged->${isChanged}, val->${result}`);
+          if (this.debug && name) {
+            console.log(`result: isChanged->Y`);
+            console.log('val->', result);
             console.groupEnd();
           }
         }
@@ -168,10 +181,9 @@ export class Store<T = {}> {
       } else {
         //debug log
         if (process.env.NODE_ENV !== 'production') {
-          if (this.debug && !name) {
-            console.log(
-              `result: isChanged->${false}, val->${this._cache[id][len]}`
-            );
+          if (this.debug && name) {
+            console.log(`result: isChanged->N`);
+            console.log('val->', this._cache[id][len]);
             console.groupEnd();
           }
         }
@@ -183,14 +195,15 @@ export class Store<T = {}> {
 
   subscribe = (callback: TSubscriber) => {
     let index = this._subscribe.indexOf(callback);
-
     if (index === -1) {
       this._subscribe.push(callback);
-      index = this._subscribe.indexOf(callback);
     }
 
     return () => {
-      this._subscribe.splice(index, 1);
+      let index = this._subscribe.indexOf(callback);
+      if (index !== -1) {
+        this._subscribe.splice(index, 1);
+      }
     };
   };
 

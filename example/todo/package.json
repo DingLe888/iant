@@ -12,8 +12,11 @@
   "dependencies": {
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
-    "iant": "0.0.1-alpha5",
+    "iant": "0.0.1-alpha10",
     "react": "^16.8.1",
     "react-dom": "^16.8.1"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
   }
 }

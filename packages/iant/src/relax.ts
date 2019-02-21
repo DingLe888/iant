@@ -80,14 +80,7 @@ export default function useRelax<T = {}>(
   const store: Store = useContext(StoreContext);
   const relaxPropsMapper = reduceRelaxPropsMapper(props);
   const relaxData = computeRelaxProps(store, relaxPropsMapper);
-  const { dispatch, setState, ...rest } = relaxData;
-  const [relax, updateState] = useState(rest || {});
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (store.debug && name) {
-      console.log(`Relax(${name}):`, relax);
-    }
-  }
+  const [relax, updateState] = useState(relaxData);
 
   //get last relax state
   const preRelax = useRef(null);
@@ -95,23 +88,29 @@ export default function useRelax<T = {}>(
     preRelax.current = relax;
   });
 
+  if (process.env.NODE_ENV !== 'production') {
+    if (store.debug && name && !preRelax.current) {
+      console.log(`Relax(${name}):`, relax);
+    }
+  }
+
+  //only componentDidMount && componentWillUnmount
   useEffect(() => {
     return store.subscribe(() => {
       const newState = computeRelaxProps(store, relaxPropsMapper);
       if (!isEqual(newState, preRelax.current)) {
         if (process.env.NODE_ENV !== 'production') {
           if (store.debug && name) {
-            console.log(`Relax(${name}):`, newState);
+            console.log(`Relax(${name})-update:`, newState);
           }
         }
         updateState(newState);
       }
     });
-  });
+  }, []);
 
-  return {
-    ...relax,
-    dispatch,
-    setState
-  } as T & { dispatch: typeof dispatch; setState: typeof setState };
+  return relax as T & {
+    dispatch: typeof store.dispatch;
+    setState: typeof store.setState;
+  };
 }

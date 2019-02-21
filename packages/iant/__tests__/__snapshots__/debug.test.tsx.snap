@@ -8,7 +8,7 @@ exports[`test debug log 1`] = `
 
 exports[`test debug log 2`] = `
 Array [
-  "iant@0.0.1-alpha6",
+  "iant@0.0.1-alpha8",
   "Provider(DebugApp) enabled debug mode ",
   "Relax(HelloRelax):",
 ]

@@ -1,53 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StoreContext } from './context';
-import { Store } from './store';
 import { IProviderProps } from './types';
 
 const noop = () => {};
 
-export default class Provider<T = {}> extends React.Component<
-  IProviderProps<T>
-> {
-  static defaultProps = {
-    onWillMount: noop,
-    onMounted: noop,
-    onWillUnmount: noop
-  };
+export default function Provider<T = {}>(props: IProviderProps<T>) {
+  const store = props.store();
 
-  private _store: Store<T>;
-
-  constructor(props: IProviderProps<T>) {
-    super(props);
-    this._store = this.props.store();
-
-    //dev
-    if (process.env.NODE_ENV !== 'production') {
-      if (this._store.debug && props.id) {
-        const { version } = require('../package.json');
-        console.log(`iant@${version}`);
-        console.log(`Provider(${props.id}) enabled debug mode `);
-        (global || window)[props.id] = this._store;
+  //debug log
+  if (process.env.NODE_ENV !== 'production') {
+    if (store.debug) {
+      console.log('Provider enable debug mode');
+      if (props.id) {
+        (global || window)[props.id] = { store };
       }
     }
   }
 
-  componentWillMount() {
-    this.props.onWillMount(this._store);
-  }
+  useEffect(() => {
+    props.onMounted(store);
+    return () => props.onWillUnmount(store);
+  }, []);
 
-  componentDidMount() {
-    this.props.onMounted(this._store);
-  }
-
-  componentDidUpdate() {
-    this.props.onMounted(this._store);
-  }
-
-  render() {
-    return (
-      <StoreContext.Provider value={this._store}>
-        {this.props.children}
-      </StoreContext.Provider>
-    );
-  }
+  //render
+  return (
+    <StoreContext.Provider value={store}>
+      {props.children}
+    </StoreContext.Provider>
+  );
 }
+
+Provider.defaultProps = {
+  onMounted: noop,
+  onWillUnmount: noop
+};

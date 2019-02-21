@@ -40,10 +40,10 @@ fast-deep-equal@^2.0.1:
   resolved "http://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-iant@^0.0.1-alpha6:
-  version "0.0.1-alpha6"
-  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha6.tgz#70f4b9221cf80af9c7b697b034395f1ada724a21"
-  integrity sha1-cPS5Ihz4CvnHtpewNDlfGtpySiE=
+iant@^0.0.1-alpha10:
+  version "0.0.1-alpha9"
+  resolved "http://registry.npm.taobao.org/iant/download/iant-0.0.1-alpha9.tgz#983e97e7d930ff00249d685c2481afc8447eb837"
+  integrity sha1-mD6X59kw/wAknWhcJIGvyER+uDc=
   dependencies:
     fast-deep-equal "^2.0.1"
     immer "^1.10.4"

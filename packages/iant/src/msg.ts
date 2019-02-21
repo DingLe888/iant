@@ -15,7 +15,7 @@ export function useMsg(listeners: TMsgListeners = []) {
         msg.off(name, handler);
       }
     };
-  }, [listeners]);
+  }, []);
 
   return msg;
 }
