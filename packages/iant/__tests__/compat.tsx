@@ -3,6 +3,7 @@ import renderer from 'react-test-renderer';
 import { createStore, StoreProvider, withRelax } from '../src';
 
 let store = createStore({
+  debug: true,
   state: {
     count: 1
   }
@@ -20,5 +21,11 @@ let TestApp = () => (
 
 it('test init', () => {
   const tree = renderer.create(<TestApp />);
+  expect(tree).toMatchSnapshot();
+
+  global['TestApp'].store.setState(data => {
+    data.count++;
+  });
+
   expect(tree).toMatchSnapshot();
 });

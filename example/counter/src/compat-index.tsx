@@ -3,11 +3,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import store from './store';
 
-const Counter = withRelax(['count'], ({ relaxProps: { setState, count } }) => {
-  const inc = () =>
+const Counter = withRelax(['count'], function Counter({
+  relaxProps: { setState, count }
+}) {
+  const inc = () => {
     setState(data => {
       data.count++;
     });
+  };
 
   const dec = () =>
     setState(data => {

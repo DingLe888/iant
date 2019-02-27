@@ -23,9 +23,7 @@ export default function withRelax(path: TRelaxPath = [], Cmp: any) {
       //如果需要箭筒store的变化
       if (isNeedRx(this._relaxMapper)) {
         this._unsubscribe = this._store.subscribe(data => {
-          this.setState(() => {
-            data;
-          });
+          this.setState(() => data);
         });
       }
 
