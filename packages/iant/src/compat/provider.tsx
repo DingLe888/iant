@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Store } from '..';
+import { Store } from '../store';
 import { IProviderProps } from '../types';
 
 const noop = () => {};
@@ -8,14 +8,21 @@ const noop = () => {};
 export default class StoreProvider<T> extends React.Component<
   IProviderProps<T>
 > {
+  //set default props
   static defaultProps = {
     onMounted: noop,
     onWillUnmount: noop
   };
+
+  //set context type
   static childContextTypes = { _iant$Store: PropTypes.object };
+
+  //set children context
   getChildContext: Function = (): Object => {
     return { _iant$Store: this._store };
   };
+
+  private _store: Store<T>;
 
   constructor(props: IProviderProps<T>) {
     super(props);
@@ -39,8 +46,6 @@ export default class StoreProvider<T> extends React.Component<
   componentWillUnmount() {
     this.props.onMounted(this._store);
   }
-
-  private _store: Store<T>;
 
   render() {
     return React.Children.only(this.props.children);
